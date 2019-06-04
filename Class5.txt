@@ -1,0 +1,110 @@
+5th Class (Dt: 24 May 2019)
+---------------------------
+Login 2 Linux AMI in Mumbai region
+Today topic is sudoer access (add user into sudoer file for root access).
+And Passwordless authentication.
+
+[ec2-user@Server1-172-31-7-73 ~]$ yum install wget -y
+##You need to be root to perform this command.
+
+[ec2-user@Server1-172-31-7-73 ~]$ sudo yum install wget -y
+## It works because ec2-user is present in /etc/sudoers file.
+ec2-user        ALL=(ALL)       NOPASSWD: ALL
+
+[ec2-user@Server1-172-31-7-73 ~]$ sudo -i
+
+[root@Server1-172-31-7-73 ~]# adduser demo_user
+
+[root@Server1-172-31-7-73 ~]# passwd demo_user	
+demo1234
+demo1234
+
+[root@Server1-172-31-7-73 ~]# su - demo_user
+
+[demo_user@Server1-172-31-7-73 ~]$ sudo yum install unzip 
+demo_user is not in the sudoers file.  This incident will be reported.
+
+[demo_user@Server1-172-31-7-73 ~]$ visudo
+visudo: /etc/sudoers: Permission denied
+
+[demo_user@Server1-172-31-7-73 ~]$ logout
+
+[root@Server1-172-31-7-73 ~]#
+
+##Note: visudo is internally "vi /etc/sudoers"
+
+[root@Server1-172-31-7-73 ~]# visudo
+### Note: add demo_user for sudo access with nopassword at the end of the file after ec2-user.
+ec2-user        ALL=(ALL)       NOPASSWD: ALL
+demo_user       ALL=(ALL)       NOPASSWD: ALL
+
+[root@Server1-172-31-7-73 ~]# su - demo_user
+Last login: Fri May 24 03:39:56 UTC 2019 on pts/0
+
+[demo_user@Server1-172-31-7-73 ~]$ sudo yum install unzip 
+
+Passwordless authentication:
+------------ ---------------
+Perform the below steps:
+
+Step 1: Generate the keys
+[root@Server1 ~]# ssh-keygen -t rsa
+
+
+
+Step 2: Copy the public key to remote machine
+[root@Server1 ~]# ssh-copy-id -i ~/.ssh/id_rsa.pub remote-host(Server2)
+or
+[root@Server1 ~]# ssh-copy-id -i ~/.ssh/id_rsa.pub user@RemoteHostName.example.com(i.e public ip)
+
+Alternatively, you can paste in the keys using SSH:
+cat ~/.ssh/id_rsa.pub | ssh user@RemotePublicIP “mkdir -p ~/.ssh && cat >>  ~/.ssh/authorized_keys”
+
+
+
+Step 3: Login to remote host machine (Server2)
+[root@Server2 ~]# 
+
+
+
+Step 4: Disable the Password for Root Login
+##Within the sshd_config file, find the line that includes PermitRootLogin and PasswordAuthentication, then modify it to ensure that users can only connect with their SSH key:
+
+[root@Server2 ~]# vi /etc/ssh/sshd_config
+	  PasswordAuthentication yes
+	  PermitRootLogin yes
+
+
+
+Step 5: Reload the ssh service
+[root@Server2 ~]# service sshd restart
+
+
+
+Step 6: Login to Host machine (Server1) and perform a secure copy to remote machine.
+[root@Server1 ~]# ls -lrt
+total 16
+-rw-------. 1 root root 7080 Mar 23  2018 original-ks.cfg
+-rw-------. 1 root root 7752 Mar 23  2018 anaconda-ks.cfg
+
+
+[root@Server1 ~]# scp   original-ks.cfg    root@35.154.220.57:/tmp/
+The authenticity of host '35.154.220.57 (35.154.220.57)' can't be established.
+ECDSA key fingerprint is SHA256:t+bGkU6M5i3Aj6kzfLwA4I2lUKoxiFgbBz9317PL8aM.
+ECDSA key fingerprint is MD5:83:3c:de:c2:c2:77:9e:e9:ad:7f:4e:30:7b:6f:3f:b1.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '35.154.220.57' (ECDSA) to the list of known hosts.
+
+original-ks.cfg                                                                                     100% 7080     2.6MB/s   00:00
+
+
+Home task:
+---------
+-> Create a text file (Hello.txt) in Windows in the same folder where AWS key is available (In my machine I save it inside ~\Documents\pem files)
+-> Open the git bash in the same folder and try to run the scp cmd.
+
+User@DESKTOP-QJV3QK7 MINGW64 ~/Documents/pem files
+$ scp    Hello.txt    root@35.154.220.57:/tmp/
+root@35.154.220.57's password:
+Hello.txt                                                                                           100%    0     0.0KB/s   00:00
+

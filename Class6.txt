@@ -1,0 +1,562 @@
+6th Class (Dt: 27 May 2019)
+---------------------------
+Today topic is Maven.
+
+Maven is a build automation tool used primarily for Java projects. Developed by Apache Software Foundation.
+Maven is a powerful project management tool that is based on POM (project object model). 
+It is used for projects build, dependency and documentation. It simplifies the build process like ANT. But it is too much advanced than ANT.
+
+In short terms we can tell maven is a tool that can be used for building and managing any Java-based project. 
+maven make the day-to-day work of Java developers easier and generally help with the comprehension of any Java-based project.
+
+POM Files: Project Object Model(POM) Files are XML file that contains information related to the project and configuration information such as dependencies, source directory, plugin, goals etc. used by Maven to build the project. When you should execute a maven command you give maven a POM file to execute the commands. Maven reads pom.xml file to accomplish its configuration and operations.
+
+
+Some useful links about maven:
+https://en.wikipedia.org/wiki/Apache_Maven
+
+https://www.geeksforgeeks.org/introduction-apache-maven-build-automation-tool-java-projects/
+
+
+
+Step1. Verify that your system has java installed or not. if not then install java
+
+cd /opt/
+
+wget --no-cookies --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" https://github.com/frekele/oracle-java/releases/download/8u212-b10/jdk-8u212-linux-x64.tar.gz
+
+tar -xvzf jdk-8u212-linux-x64.tar.gz
+
+Step2. Check java Environmental variable is set or not. if not then set java environmental variable.
+
+[root@Maven1 opt]# vi ~/.bash_profile
+
+export JAVA_HOME=/opt/jdk1.8.0_212
+export PATH=$PATH:/opt/jdk1.8.0_212/bin
+
+[root@Maven1 opt]# source /root/.bash_profile
+
+[root@Maven1 opt]# java -version
+java version "1.8.0_212"
+Java(TM) SE Runtime Environment (build 1.8.0_212-b10)
+
+
+
+Step3. Download maven (Link)
+[root@Maven1 opt]# wget http://mirrors.estointernet.in/apache/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.zip
+
+Step4. Unpack your maven zip at any place in your system.
+
+===> extract the zip file
+[root@Maven1 opt]# unzip apache-maven-3.6.1-bin.zip 
+
+Add the bin directory of the created directory apache-maven-3.6.1(it depends upon your installation version) to the PATH environment variable and system variable.
+
+[root@Maven1 opt]# vi ~/.bash_profile
+export PATH=$PATH:/opt/jdk1.8.0_212/bin:/opt/apache-maven-3.6.1/bin
+
+[root@Maven1 opt]# source /root/.bash_profile
+
+Open cmd and run mvn -v command. If it print following lines of code then Then installation completed.
+[root@Maven1 opt]# mvn -v
+Apache Maven 3.6.1 (d66c9c0b3152b2e69ee9bac180bb8fcc8e6af555; 2019-04-04T19:00:29Z)
+Maven home: /opt/apache-maven-3.6.1
+Java version: 1.8.0_212, vendor: Oracle Corporation, runtime: /opt/jdk1.8.0_212/jre
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "3.10.0-957.12.2.el7.x86_64", arch: "amd64", family: "unix"
+
+
+
+Maven goal life cycle
+https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+
+For example, the default lifecycle comprises of the following phases (for a complete list of the lifecycle phases, refer to the Lifecycle Reference):
+
+-> validate - validate the project is correct and all necessary information is available
+
+-> compile - compile the source code of the project
+
+-> test - test the compiled source code using a suitable unit testing framework. These tests should not require the code be packaged or deployed
+
+-> package - take the compiled code and package it in its distributable format, such as a JAR.
+
+-> verify - run any checks on results of integration tests to ensure quality criteria are met
+
+-> install - install the package into the local repository, for use as a dependency in other projects locally
+
+-> deploy - done in the build environment, copies the final package to the remote repository for sharing with other developers and projects.
+
+These lifecycle phases (plus the other lifecycle phases not shown here) are executed sequentially to complete the default lifecycle. 
+
+Given the lifecycle phases above, this means that when the default lifecycle is used, Maven will first validate the project, then will try to compile the sources, run those against the tests, package the binaries (e.g. jar), run integration tests against that package, verify the integration tests, install the verified package to the local repository, then deploy the installed package to a remote repository.
+
+
+
+Home exercise:
+Download the source code available from github and copy in my_maven_proj and make the Artifacts.
+
+[root@Maven1 my_maven_proj]# git clone https://github.com/jenkins-docs/simple-java-maven-app.git
+
+[root@Maven1 my_maven_proj]# ls -lrt
+drwxr-xr-x. 5 root root 116 May 29 07:37 simple-java-maven-app
+
+[root@Maven1 simple-java-maven-app]# ls -lrt
+total 8
+-rw-r--r--. 1 root root  744 May 29 07:34 README.md
+drwxr-xr-x. 3 root root   40 May 29 07:34 jenkins
+drwxr-xr-x. 4 root root   30 May 29 07:34 src
+-rw-r--r--. 1 root root 1196 May 29 07:34 pom.xml
+
+
+pom.xml:
+========
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mycompany.app</groupId>
+  <artifactId>my-app</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>my-app</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <!-- Build an executable JAR -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.0.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
+              <mainClass>com.mycompany.app.App</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+
+
+Java source code (App.java):
+
+vi /opt/my_maven_proj/simple-java-maven-app/src/main/java/com/mycompany/app/App.java
+============ Start ======= 
+package com.mycompany.app;
+
+/**
+ * Hello world!
+ */
+public class App
+{
+
+    private final String message = "Hello World!";
+
+    public App() {}
+
+    public static void main(String[] args) {
+        System.out.println(new App().getMessage());
+    }
+
+    private final String getMessage() {
+        return message;
+    }
+
+}
+================= End =========================
+
+
+[root@Maven1 simple-java-maven-app]# mvn validate
+[INFO] Scanning for projects...
+[INFO]
+[INFO] --------------------< com.mycompany.app:my-new-app >--------------------
+[INFO] Building my-new-app 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.272 s
+[INFO] Finished at: 2019-05-29T09:10:22Z
+[INFO] ------------------------------------------------------------------------
+[root@Maven1 simple-java-maven-app]#
+
+
+
+[root@Maven1 simple-java-maven-app]# tree
+.
+├── jenkins
+│   ├── Jenkinsfile
+│   └── scripts
+│       └── deliver.sh
+├── pom.xml
+├── README.md
+└── src
+    ├── main
+    │   └── java
+    │       └── com
+    │           └── mycompany
+    │               └── app
+    │                   └── App.java
+    └── test
+        └── java
+            └── com
+                └── mycompany
+                    └── app
+                        └── AppTest.java
+
+13 directories, 6 files
+
+
+
+[root@Maven1 simple-java-maven-app]# mvn compile
+[INFO] Scanning for projects...
+[INFO]
+[INFO] --------------------< com.mycompany.app:my-new-app >--------------------
+[INFO] Building my-new-app 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+Downloading from central: https://repo.maven.apache.org/maven2/junit/junit/4.11/junit-4.11.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/junit/junit/4.11/junit-4.11.pom (2.3 kB at 2.2 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.pom (766 B at 3.2 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest-parent/1.3/hamcrest-parent-1.3.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest-parent/1.3/hamcrest-parent-1.3.pom (2.0 kB at 8.3 kB/s)
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ my-new-app ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /opt/my_maven_proj/simple-java-maven-app/src/main/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ my-new-app ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /opt/my_maven_proj/simple-java-maven-app/target/classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.826 s
+[INFO] Finished at: 2019-05-29T09:13:19Z
+[INFO] ------------------------------------------------------------------------
+[root@Maven1 simple-java-maven-app]#
+
+
+
+[root@Maven1 simple-java-maven-app]# tree
+.
+├── jenkins
+│   ├── Jenkinsfile
+│   └── scripts
+│       └── deliver.sh
+├── pom.xml
+├── README.md
+├── src
+│   ├── main
+│   │   └── java
+│   │       └── com
+│   │           └── mycompany
+│   │               └── app
+│   │                   └── App.java
+│   └── test
+│       └── java
+│           └── com
+│               └── mycompany
+│                   └── app
+│                       └── AppTest.java
+└── target
+    ├── classes
+    │   └── com
+    │       └── mycompany
+    │           └── app
+    │               └── App.class
+    └── maven-status
+        └── maven-compiler-plugin
+            └── compile
+                └── default-compile
+                    ├── createdFiles.lst
+                    └── inputFiles.lst
+
+22 directories, 9 files
+
+
+After compile the code target folder get created, which consist class build file.
+
+└── target
+    ├── classes
+    │   └── com
+    │       └── mycompany
+    │           └── app
+    │               └── App.class
+    └── maven-status
+        └── maven-compiler-plugin
+            └── compile
+                └── default-compile
+                    ├── createdFiles.lst
+                    └── inputFiles.lst
+
+Note: When you will run 'mvn clean', the target dir get cleaned. Please take a look.
+
+[root@Maven1 simple-java-maven-app]# mvn clean
+[INFO] Scanning for projects...
+[INFO]
+[INFO] --------------------< com.mycompany.app:my-new-app >--------------------
+[INFO] Building my-new-app 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ my-new-app ---
+[INFO] Deleting /opt/my_maven_proj/simple-java-maven-app/target
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.564 s
+[INFO] Finished at: 2019-05-29T09:30:47Z
+[INFO] ------------------------------------------------------------------------
+[root@Maven1 simple-java-maven-app]# tree
+.
+├── jenkins
+│   ├── Jenkinsfile
+│   └── scripts
+│       └── deliver.sh
+├── pom.xml
+├── README.md
+└── src
+    ├── main
+    │   └── java
+    │       └── com
+    │           └── mycompany
+    │               └── app
+    │                   └── App.java
+    └── test
+        └── java
+            └── com
+                └── mycompany
+                    └── app
+                        └── AppTest.java
+
+13 directories, 6 files
+
+
+
+[root@Maven1 simple-java-maven-app]# mvn test
+[INFO] Scanning for projects...
+[INFO]
+[INFO] --------------------< com.mycompany.app:my-new-app >--------------------
+[INFO] Building my-new-app 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+Downloading from central: https://repo.maven.apache.org/maven2/junit/junit/4.11/junit-4.11.jar
+Downloading from central: https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar (45 kB at 38 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/junit/junit/4.11/junit-4.11.jar (245 kB at 171 kB/s)
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ my-new-app ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /opt/my_maven_proj/simple-java-maven-app/src/main/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ my-new-app ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /opt/my_maven_proj/simple-java-maven-app/target/classes
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ my-new-app ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /opt/my_maven_proj/simple-java-maven-app/src/test/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ my-new-app ---
+[INFO] Changes detected - recompiling the module!
+[WARNING] File encoding has not been set, using platform encoding UTF-8, i.e. build is platform dependent!
+[INFO] Compiling 1 source file to /opt/my_maven_proj/simple-java-maven-app/target/test-classes
+[INFO]
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ my-new-app ---
+[INFO] Surefire report directory: /opt/my_maven_proj/simple-java-maven-app/target/surefire-reports
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-junit4/2.12.4/surefire-junit4-2.12.4.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-junit4/2.12.4/surefire-junit4-2.12.4.pom (2.4 kB at 10 kB/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-junit4/2.12.4/surefire-junit4-2.12.4.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/surefire/surefire-junit4/2.12.4/surefire-junit4-2.12.4.jar (37 kB at 154 kB/s)
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.mycompany.app.AppTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.072 sec
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  6.124 s
+[INFO] Finished at: 2019-05-29T09:32:04Z
+[INFO] ------------------------------------------------------------------------
+[root@Maven1 simple-java-maven-app]#
+
+
+[root@Maven1 simple-java-maven-app]# mvn package
+[INFO] Scanning for projects...
+[INFO]
+[INFO] --------------------< com.mycompany.app:my-new-app >--------------------
+[INFO] Building my-new-app 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ my-new-app ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /opt/my_maven_proj/simple-java-maven-app/src/main/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ my-new-app ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ my-new-app ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /opt/my_maven_proj/simple-java-maven-app/src/test/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ my-new-app ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO]
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ my-new-app ---
+[INFO] Surefire report directory: /opt/my_maven_proj/simple-java-maven-app/target/surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.mycompany.app.AppTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.091 sec
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO]
+[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ my-new-app ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  4.817 s
+[INFO] Finished at: 2019-05-29T18:20:45Z
+[INFO] ------------------------------------------------------------------------
+[root@Maven1 simple-java-maven-app]#
+
+
+
+
+[root@Maven1 simple-java-maven-app]# mvn verify
+[INFO] Scanning for projects...
+[INFO]
+[INFO] --------------------< com.mycompany.app:my-new-app >--------------------
+[INFO] Building my-new-app 1.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ my-new-app ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /opt/my_maven_proj/simple-java-maven-app/src/main/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ my-new-app ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO]
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ my-new-app ---
+[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory /opt/my_maven_proj/simple-java-maven-app/src/test/resources
+[INFO]
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ my-new-app ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO]
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ my-new-app ---
+[INFO] Surefire report directory: /opt/my_maven_proj/simple-java-maven-app/target/surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.mycompany.app.AppTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.119 sec
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO]
+[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ my-new-app ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.103 s
+[INFO] Finished at: 2019-05-29T18:31:29Z
+[root@Maven1 simple-java-maven-app]#
+
+
+
+[root@Maven1 simple-java-maven-app]# mvn install
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.mycompany.app.AppTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.106 sec
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO]
+[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ my-new-app ---
+[INFO]
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ my-new-app ---
+[INFO] Installing /opt/my_maven_proj/simple-java-maven-app/target/my-new-app-1.0-SNAPSHOT.jar to /root/.m2/repository/com/mycompany/app/my-new-app/1.0-SNAPSHOT/my-new-app-1.0-SNAPSHOT.jar
+[INFO] Installing /opt/my_maven_proj/simple-java-maven-app/pom.xml to /root/.m2/repository/com/mycompany/app/my-new-app/1.0-SNAPSHOT/my-new-app-1.0-SNAPSHOT.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[root@Maven1 simple-java-maven-app]#
+
+
+[root@Maven1 simple-java-maven-app]# lst /root/.m2/repository/com/mycompany/app/my-new-app/1.0-SNAPSHOT/my-new-app-1.0-SNAPSHOT.pom
+-rw-r--r--. 1 root root 1204 May 29 09:09 /root/.m2/repository/com/mycompany/app/my-new-app/1.0-SNAPSHOT/my-new-app-1.0-SNAPSHOT.pom
+
+
+
+
+[root@Maven1 simple-java-maven-app]# mvn deploy
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.mycompany.app.AppTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.112 sec
+
+Results :
+
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO]
+[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ my-new-app ---
+[INFO]
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ my-new-app ---
+[INFO] Installing /opt/my_maven_proj/simple-java-maven-app/target/my-new-app-1.0-SNAPSHOT.jar to /root/.m2/repository/com/mycompany/app/my-new-app/1.0-SNAPSHOT/my-new-app-1.0-SNAPSHOT.jar
+[INFO] Installing /opt/my_maven_proj/simple-java-maven-app/pom.xml to /root/.m2/repository/com/mycompany/app/my-new-app/1.0-SNAPSHOT/my-new-app-1.0-SNAPSHOT.pom
+[INFO]
+[INFO] --- maven-deploy-plugin:2.7:deploy (default-deploy) @ my-new-app ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.368 s
+[INFO] Finished at: 2019-05-29T09:41:18Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-deploy-plugin:2.7:deploy (default-deploy) on project my-new-app: Deployment failed: repository element was not specified in the POM inside distributionManagement element or in -DaltDeploymentRepository=id::layout::url parameter -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+[root@Maven1 simple-java-maven-app]#
+
+
+It Failed because, there is no online artifact repository associated with this project.
+Nexus is a best example of online artifact repo tool.
