@@ -1,0 +1,14 @@
+11th Class (Dt: 03 June 2019)
+---------------------------
+Hometask
+--------
+Install some db or app, get the manual steps from internet and configure it in Jenkins, Ansible, Chef.
+
+Search: How to install mysql in linux 
+Remember all the commands and do it manually, then try to automate it.
+do it in Jenkins, Ansible, Chef for practice.
+
+Today topic is CI CD Pipeline
+
+
+Creating a Job That Uses Pipeline as Script
