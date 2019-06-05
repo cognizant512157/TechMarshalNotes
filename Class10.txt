@@ -1,0 +1,55 @@
+10th Class (Dt: 30 May 2019)
+----------------------------
+Master and Slave in Jenkins world
+
+Setup a slave machine
+
+Setup the pem file credential
+If you are using diff pem file than jenkins 
+
+Jenkins page
+Manage nodes
+
+New Node -> slave1
+Permanent agent -> ok 
+
+Name: Slave1
+Description: This is new slave nodes
+Remote root dir: /home/ec2-user/
+Lavels: label1
+
+Usage: Use this node as much as possible
+
+Launch method: Launch agent agents via ssh
+
+Host: Private IP of slave 
+
+Credentials: ec2-user(RemoteMachine1)
+
+Host Ket Verification Strategy: Non verufying verification Stratefuy 
+
+
+Availailty: Keep this agent online as much as possible
+
+
+Git Webhook
+============
+
+
+
+
+Home exercise
+-------------
+https://www.baeldung.com/category/devops/tag/jenkins/
+
+
+Build a maven package through in Jenkins
+
+
+Learn how to install tomcat manually
+--> tomcat installation in Linux
+Help from web(techmint page)
+
+--> Jboss installation
+
+-->Then put those steps in jenkin and automate the task.
