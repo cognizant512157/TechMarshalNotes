@@ -232,3 +232,4 @@ $	sudo mv sample2 /home/quru99/Documents
 $	sudo -i
 -----------------
 
+vi editor
