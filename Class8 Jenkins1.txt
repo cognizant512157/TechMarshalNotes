@@ -1,0 +1,75 @@
+8th Class (Dt: 28 May 2019)
+---------------------------
+Today topic is Jenkins.
+
+
+Kohsuke Kawaguchi is a computer programmer who is best known as the creator of the Jenkins software project.
+
+Jenkins is an Integration tool. 
+Jenkins helps to automate the non-human part of the software development process, with continuous integration and facilitating technical aspects of continuous delivery.
+
+It's a java based application, to run this app you need to have JDK software install. It is a server-based system that runs in servlet containers such as Apache Tomcat.
+
+It supports version control tools, including AccuRev, CVS, Subversion, Git, Mercurial, Perforce, TD/OMS, ClearCase and RTC, and can execute Apache Ant, Apache Maven and sbt based projects as well as arbitrary shell scripts and Windows batch commands.
+ 
+Released under the MIT License, Jenkins is free software
+
+The Jenkins project was originally named Hudson, and was renamed after a dispute with Oracle.
+
+In a nutshell, Jenkins is the leading open-source automation server. Built with Java, it provides over 1000 plugins to support automating virtually anything, so that humans can actually spend their time doing things machines cannot.
+
+Jenkins replaced Hudson since February 8, 2017 in Eclipse. In March 2018 Jenkins X software project for Kubernetes was publicly presented,[19] with support for different cloud provider including AWS EKS among others.
+
+. InfoWorld Bossie Award (Best of Open Source Software Award) in 2011.[30]
+. Received Geek Choice Award in 2014.
+
+
+https://pkg.jenkins.io/redhat/
+
+To install jenkins, we have add the package to repo and then install it.
+
+wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
+
+rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key 
+===========================
+If you've previously imported the key from Jenkins, the "rpm --import" will fail because you already have a key. Please ignore that and move on.
+
+You will need to explicitly install a Java runtime environment, because Oracle's Java RPMs are incorrect and fail to register as providing a java dependency. Thus, adding an explicit dependency requirement on Java would force installation of the OpenJDK JVM.
+
+2.164 (2019-02) and newer: Java 8 or Java 11
+2.54 (2017-04) and newer: Java 8
+1.612 (2015-05) and newer: Java 7
+===========================
+
+yum install jenkins -y
+
+service jenkins start
+
+
+Some ways to install the Jenkin
+Install the Jenkin binary
+
+Deploy the Jenkins as application in tomcat/JBOSS
+
+[root@jenkins jenkins]# cat /var/lib/jenkins/secrets/initialAdminPassword
+2ff2002016b845ab969bd5e73016bc41
+
+
+Jenkins URL:	http://13.127.192.61:8080/
+
+Admin
+Admin123
+
+Public IP of server: 13.127.192.61
+
+sudo yum install httpd -y
+sudo service httpd start
+
+
+How to stop and remove the jenkins from machine
+[root@jenkins ~]# service jenkins stop
+[root@jenkins ~]# yum remove jenkins
+[root@jenkins ~]# rm -rf /var/lib/jenkins
+
+
+
