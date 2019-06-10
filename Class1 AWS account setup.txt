@@ -1,0 +1,64 @@
+1st Class (Dt: 20 May 2019)
+---------------------------
+First we install Git bash and then create account in AWS and setup.
+
+Git:
+====
+Git is a set of command line utility programs that are designed to execute on a Unix style command-line environment. 
+
+Git Bash is an application for Microsoft Windows environments which provides an emulation layer for a Git command line experience. 
+Bash is an acronym for Bourne Again Shell. 
+A shell is a terminal application used to interface with an operating system through written commands.
+Git Bash is a package that installs Bash, some common bash utilities, and Git on a Windows operating system. Git Bash is offered to provide a terminal Git experience. 
+
+
+Install GIT Bash software in your system from web. (https://gitforwindows.org/)
+-> Download and install Git For Windows like other Windows applications. Once downloaded find the included .exe file (Git-2.21.0-64-bit.exe) and open to execute Git Bash.
+
+
+
+
+Amazon Web Services:
+====================
+Amazon Web Services (AWS) is a subsidiary of Amazon that provides on-demand cloud computing platforms to individuals, companies and governments, on a metered pay-as-you-go basis
+
+Create an account in AWS with payment validation. 
+
+AWS console https://aws.amazon.com/console/
+
+Create an instance in EC2 service and login to the Linux AMI
+
+-> Launch Instance 
+-> Red Hat Enterprise Linux 7.5 (HVM), SSD Volume Type -> Select 64-bit
+-> Click on Review and Launch
+-> Edit security groups 
+-> Change SSH to All traffic
+-> Click on Review and Launch
+-> Click on Launch
+-> Create a new key pair ->   Pair Name "Mumbai20May" -> Download Key Pair (Mumbai23May.pem saved in Download folder)
+-> Click on Launch Instances
+-> View Instances
+-> go to Download folder, right click and click on "Git Bash Here" 
+-> go to AWS EC2 page, you will see one instance has started. 
+-> Click on Connect(On the Top) 
+-> Copy the ssh command in git bash command prompt
+Ex: ssh -i "Mumbai23May.pem" ec2-user@ec2-13-234-115-155.ap-south-1.compute.amazonaws.com
+Put "yes"
+-> Perform some linux commands, for ex:
+echo "helloo..."
+pwd
+ls -lrt
+
+sudo -i 
+pwd
+
+yum update -y 
+hostname -I
+ifconfig
+ps -ef
+exit
+
+While finish your task, don't forget to terminate the terminal
+-> go to AWS EC2 service page 
+-> Click on the instance 
+-> Action -> Instance State -> Terminate -> Yes, Terminate
