@@ -1,0 +1,189 @@
+9th Class (Dt: 29 May 2019)
+---------------------------
+Jenkins continuation...
+
+Create a new RHEL remote instance.
+
+Step1: Install SSH plugin
+
+Install SSH plugins in jenkins server, show that it can talk with remote machine
+
+Jenkins-->Manage Jenkins--> Manage Plugins-->click on "Available” tab
+
+In filter engine search respective plugin example: SSH
+
+Select the “SSH” plugin -> Click on “Install without restart”
+
+
+Step2: To setup credentials
+
+To access remote machine and execute commands on remote machine, need to be setting up credentials in jenkins server.
+
+Jenkins-->Credentials-->global--> Add Credentials
+
+
+Kind: SSH Username with private key.
+Scope: Global
+ID: RemoteSSH
+Description: Jenkin client credentials
+Username: ec2-user
+Private key: Open the pem aws key file, copy the content of pem key file which u use for remote instance and paste it here.
+Passphrase: Don't give any thing here
+
+
+
+
+Step3: Configure remote ssh sites
+
+We will provide all the credentials of server here 
+
+Jenkins-> Manage Jenkins-> Configure System-> When you will scroll down u can see "SSH remote hosts" -> SSH sites-> Add -> 
+Hostname : Private IP of newly created remote machine 
+Port: 22
+Credentials: ec2-user (Remotemachine) 
+Click on Check connection -> you will see Successful connection
+Click on the "save" button at the bottom.
+
+We can add more remote machine if instances are available
+
+Step4: Create a job to execute on remote machine
+
+Jenkins -> New Item-> RemoteJob1-> Freestyle-> ok-> 
+Add build step-> Execute shell script on remote host ssh
+SSH site: ec2-uiser@IP
+
+Command: 
+sudo yum install tomcat wget httpd -y
+sudo service tomcat start
+sudo wget  https://www.oracle.com/webfolder/technetwork/tutorials/obe/fmw/wls/12c/03-DeployApps/files/benefits.war -P /usr/share/tomcat/webapps
+
+Save -> Build now -> we can monitor the console output -> We can see the build is Success 
+
+Now open the browser and check the benefits war file (Class3 note)
+http://13.233.199.99:8080/benefits/
+
+Its Done
+
+
+Step5: Now we will see more details by editing the job config
+
+Jenkins -> New Item-> RemoteJob2-> Freestyle-> ok-> 
+Add build step-> Execute shell script on remote host ssh
+SSH site: ec2-uiser@IP
+
+
+sudo service httpd start
+sudo touch /var/www/html/index.html 
+sudo chmod 777 /var/www/html/index.html 
+sudo echo '<!DOCTYPE html>'  > /var/www/html/index.html
+sudo echo '<html><body>'  >> /var/www/html/index.html
+sudo echo '<h1> My First Page</h1>' >> /var/www/html/index.html
+sudo echo '<p>This is a paragraph.</p>' >> /var/www/html/index.html
+sudo echo '</body></html>' >> /var/www/html/index.html
+
+Now open the browser and check the benefits war file (Class3 note)
+http://13.235.80.92:8080/benefits
+
+
+General tab
+-> Discard old builds   'i' button and get to know the info 
+
+-> GitHub project
+
+-> This build requires lockable resources
+It means when the start the job is running stop job should be locked otherwise it will be terminated 
+
+-> This project is parameterised 
+Create a new job->  
+ Configure -> Add Parameter -> String parameter 
+ Name: pkgName
+ Description: Select one of the options
+ 
+ Configure it again: 
+ Configure -> Add Parameter -> Choice parameter 
+ Name: pkg name 
+ Choices: 
+ httpd
+ tomcat
+ unzip
+ tree
+ 
+ Description: Select one of the options
+
+
+-> Throttle builds 
+
+-> Disable this project
+
+-> Execute concurrent builds if necessary
+
+-> Restrict where this project can be run
+
+
+
+Source Code Management
+
+-> None
+
+-> Git
+
+-> Subversion
+
+
+Build Triggers 
+===== ========
+=> Trigger builds remotely
+ 
+=> Build after other projects are built
+ 
+
+
+
+=> Build periodically (click the info 'i' button)
+
+ */2 * * * *
+
+Let’s type */2 * * * * here, which represents an interval of two minutes:
+
+Under Build -> Execute shell
+ echo "Hello world"
+
+save and Build Now.
+Check the console output. 
+ 
+Started by timer
+Running as SYSTEM
+Building on master in workspace /var/lib/jenkins/workspace/ScheduleJob1
+[ScheduleJob1] $ /bin/sh -xe /tmp/jenkins902523741381388637.sh
++ echo 'Hello World'
+Hello World
+Finished: SUCCESS
+
+ 
+=> GitHub hook trigger for GITSCM polling
+
+=> Poll SCM
+
+Tutorial: Scheduling a Job in Jenkins
+https://www.baeldung.com/jenkins-job-schedule
+
+ 
+Hometask:
+---------
+Default port numbers of basic applications 
+
+Q. difference between Build periodically and Poll SCM in jenkins?
+
+The primary difference between triggering a build periodically and poll SCM is, with Trigger Builds Periodically will trigger builds as per the schedule (every 10 minutes) even if you haven't changed anything. Poll SCM will check for changes before triggering any build, if there are changes to the previous version there only build will be triggered. 
+
+Poll SCM periodically polls the SCM to check whether changes were made (i.e. new commits) and builds the project if new commits where pushed since the last build, whereas build periodically builds the project periodically even if nothing has changed.
+
+Use Poll SCM instead of Build Periodically. In Jenkins You can trigger a build in many ways.
+-> Build Manually
+-> Trigger Builds Remotely
+-> Trigger Builds Periodically
+-> Poll SCM
+
+
+Jenkins Tutorial For Beginners 6 - How to Trigger a remote build + Job chaining In Jenkins
+https://www.youtube.com/watch?v=cPI1HF5Y094
