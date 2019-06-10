@@ -1,0 +1,50 @@
+11th Class (Dt: 03 June 2019)
+---------------------------
+Today topic is CI CD Pipeline
+
+We can create pipeline job in two ways:
+->	Pipeline code
+->	Build pipeline.
+
+Pipeline code: It uses Groovy language.
+We need to write code in groovy language and in stages mode.
+
+Exercise1:
+Jenkins --> New item --> Select pipeline and name something as “pipelinejob2”
+
+Build pipeline plugin
+Step1:
+Jenkins-->Manage Jenkins-->Manage Plugins-->
+In filter section, search for “build pipeline” 
+Select “Build Pipeline Plugin” 
+Install without restart
+
+Create multiple jobs (3 now) like as below
+
+job1: echo "continuous integration getting done"
+job2: echo "continuous delivery getting done"
+job3: echo "continuous deployment getting done"
+
+go to each job "Configure" --> Build Triggers --> Build after other projects are built -->
+
+Configure each job should trigger one after another job, then run the job. 
+It will run successfully all jobs.
+
+Home exercise: Creating a Job That Uses Pipeline as Script
+
+
+
+Hometask
+--------
+Install some db or app, get the manual steps from internet and configure it in Jenkins, Ansible, Chef.
+
+Search: How to install mysql in linux 
+Remember all the commands and do it manually, then try to automate it.
+do it in Jenkins, Ansible, Chef for practice.
+
+
+
+If you forget the jenkins password, what to do?
+go to '/var/lib/jenkins/' folder in RHEL machine
+Then copy the jenkins folder to another RHEL machine
+Now you can use jenkins page 
