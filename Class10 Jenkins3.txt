@@ -1,10 +1,10 @@
 10th Class (Dt: 30 May 2019)
 ----------------------------
-Master and Slave in Jenkins world
+Master and Slave in Jenkins world.
 
 Create a RHEL machine and named it as Slave1.
 
-Create a new credential using the same pem file for Slave1 machine.
+Create the new credential using the same pem file for Slave1 machine.
 Hints: Jenkins -> Credentials  -> global  -> Add Credentials
 
 If you are using different key file(.pem file) for slave than Master then setup the new key credential first.
@@ -25,10 +25,10 @@ Host: Private IP of slave
 
 Credentials: ec2-user(RemoteMachine1)
 
-Host Ket Verification Strategy: Non verufying verification Stratefuy 
+Host Key Verification Strategy: Non verifying Verification Strategy 
 
 
-Availailty: Keep this agent online as much as possible
+Availability: Keep this agent online as much as possible
 
 
 If the Slave1 is marked with cross symbol, just refresh it. It will show with details. Still if it’s not coming up, then again configure it and read the logs.
