@@ -25,19 +25,19 @@ Private IP: 172.31.3.44
 User id: ec2-user (default user)
 ssh -i "Mumbai21May.pem" ec2-user@ec2-35-154-18-170.ap-south-1.compute.amazonaws.com
 
-sudo -i 
+$	sudo -i 
 
-yum update -y 
+$	yum update -y 
 
-yum install httpd -y 
+$	yum install httpd -y 
 
-service httpd start 
+$	service httpd start 
 ## Internally it fires this cmd -> /bin/systemctl start httpd.service
 
-systemctl status httpd
+$	systemctl status httpd
 
 ============================
-vi /var/www/html/index.html
+$	vi /var/www/html/index.html
 press i for insert mode
 <!DOCTYPE html>
 <html>
@@ -45,10 +45,8 @@ press i for insert mode
 <title>Page Title</title>
 </head>
 <body>
-
 <h1>This is a Heading</h1>
 <p>This is a paragraph.</p>
-
 </body>
 </html>
 
@@ -100,3 +98,4 @@ wget https://www.oracle.com/webfolder/technetwork/tutorials/obe/fmw/wls/12c/03-D
 
 access this in the browser 
 "publicIP:8080/benefits"
+
