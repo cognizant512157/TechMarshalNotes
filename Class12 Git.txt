@@ -67,7 +67,7 @@ $ mkdir ../demo_repo2
 $ cd  ../demo_repo2
 
 User@DESKTOP-QJV3QK7 MINGW64 ~/Documents/GitProject/demo_repo2 $ 
-
+$ cd  ../demo_repo1
 
 User@DESKTOP-QJV3QK7 MINGW64 ~/Documents/GitProject/demo_repo1 (master)
 $ ls -lart
@@ -96,7 +96,7 @@ nothing added to commit but untracked files present (use "git add" to track)
 $ git add newFile1.txt
 
 
-$ git commit -m "Commiting my first 100 lines of code"
+$ git commit -m "Commiting my first 100 lines of code" newFile1.txt
 
 *** Please tell me who you are.
 
@@ -117,8 +117,7 @@ $ git config --global user.email "satyabratakaran09@gmail.com"
 $ git config --global user.name "Satyabrata Karan"
 
 
-
-$ git commit -m "Commiting my 100 lines of code"
+$ git commit -m "Commiting my 100 lines of code" newFile1.txt
 [master (root-commit) 7203460] Commiting my 100 lines of code
  1 file changed, 2 insertions(+)
  create mode 100644 newFile1.txt
@@ -130,6 +129,7 @@ nothing to commit, working tree clean
 
 
 $ vi newFile1.txt
+First 100 lines of code
 Second 100 lines of code
 
 
@@ -149,17 +149,14 @@ warning: LF will be replaced by CRLF in newFile1.txt.
 The file will have its original line endings in your working directory
 
 
-
 $ git commit -m "Commiting my another 200 lines of code now."
 [master 741809f] Commiting my another 200 lines of code now.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 
-
 $ git status
 On branch master
 nothing to commit, working tree clean
-
 
 
 $ git log
@@ -182,6 +179,12 @@ $ git log --oneline
 7203460 Commiting my 100 lines of code
 
 
+
+
+
+
+GitHub (https://github.com)
+===========================
 Login to GitHub account. 
 It's free, you can sign up here without any cost.
 
@@ -189,7 +192,7 @@ Create a new repository in GitHub
 
 New ->
 
-Repository name: demo1
+Repository name: demo_repo1
 
 Description: For practice
 
@@ -199,24 +202,25 @@ Click on Create Repository
 
 
 
-You will on the next screen.
+You will see on the next screen.
+---------------------------------
 …or create a new repository on the command line
-	echo "# MyNotes" >> README.md
+	echo "# demo_repo1" >> README.md
 	git init
 	git add README.md
 	git commit -m "first commit"
-	git remote add origin https://github.com/satyakaibm/MyNotes.git
+	git remote add origin https://github.com/satyakaibm/demo_repo1.git
 	git push -u origin master
 
 
 …or push an existing repository from the command line
-	git remote add origin https://github.com/satyakaibm/MyNotes.git
+	git remote add origin https://github.com/satyakaibm/demo_repo1.git
 	git push -u origin master
 
 
 Now come to Git Bash terminal. and type it
 
-$ git remote add origin https://github.com/satyakaibm/repo1.git
+$ git remote add origin https://github.com/satyakaibm/demo_repo1.git
 
 
 $ git push -u origin master
@@ -228,19 +232,19 @@ Delta compression using up to 4 threads
 Compressing objects: 100% (3/3), done.
 Writing objects: 100% (6/6), 548 bytes | 182.00 KiB/s, done.
 Total 6 (delta 0), reused 0 (delta 0)
-To https://github.com/satyakaibm/repo1.git
+To https://github.com/satyakaibm/demo_repo1.git
  * [new branch]      master -> master
-
-
-
 
 
 
 Again do some change in file and commit with push the code to repo.
 
 $ vi newFile1.txt
+First 100 lines of code
+Second 100 lines of code
+Third 100 lines of code
 
-$ git commit -am "adding another 100 lines of codes"
+$ git commit -am "adding another 100 lines of codes" newFile1.txt
 
 $ git push
 Enumerating objects: 5, done.
@@ -249,7 +253,7 @@ Delta compression using up to 4 threads
 Compressing objects: 100% (2/2), done.
 Writing objects: 100% (3/3), 318 bytes | 159.00 KiB/s, done.
 Total 3 (delta 0), reused 0 (delta 0)
-To https://github.com/satyakaibm/repo1.git
+To https://github.com/satyakaibm/demo_repo1.git
    741809f..e455157  master -> master
 
 
@@ -261,24 +265,21 @@ e455157 (HEAD -> master, origin/master) adding another 100 lines of codes
 
 
 Note: In the github webpage, now modify the file (newFile1.txt) in Github site and commit the code there.
-But you can't see that change in local folder in Unix.
-TO get the latest code in the local repository we need to pull the code intermittently.
+But you can't see that change in local folder in Linux machine.
+To get the latest code in the local repository we need to pull the code intermittently.
 
-
-
-$ git pull
+$ git pull https://github.com/satyakaibm/demo_repo1
 remote: Enumerating objects: 5, done.
 remote: Counting objects: 100% (5/5), done.
 remote: Compressing objects: 100% (2/2), done.
 remote: Total 3 (delta 1), reused 0 (delta 0), pack-reused 0
 Unpacking objects: 100% (3/3), done.
-From https://github.com/satyakaibm/repo1
+From https://github.com/satyakaibm/demo_repo1
    57e0cb2..5526de0  master     -> origin/master
 Updating 57e0cb2..5526de0
 Fast-forward
  newFile1.txt | 3 +++
  1 file changed, 3 insertions(+)
-
 
 
 $ git log --oneline
@@ -289,11 +290,11 @@ e455157 adding another 100 lines of codes
 7203460 Commiting my 100 lines of code
 
 
-
-$ git pull
+$ git pull https://github.com/satyakaibm/demo_repo1
 Already up to date.
 
 
 $ mkdir demo_repo3
 
 $ git clone  https://github.com/satyakaibm/MyNotes.git
+
