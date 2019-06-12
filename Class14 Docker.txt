@@ -2,15 +2,52 @@
 -----------------------------
 Today topic is Docker container
 
-CE -> Community Edition
-EE -> Enterprise Edition
+What is Docker?
+Docker is computer software used for virtualization in order to have multiple Operating systems running on the same host. 
+Unlike Hypervisors which are used for creating VM (Virtual machines), virtualization in Docker is performed on system-level in so called Docker containers.
 
-EE for Linux
+Docker Tutorial for Beginners: https://www.guru99.com/docker-tutorial.html
+
+
+Docker containers run in an isolated environment on top of the host's OS. Even if your host runs Windows OS, you can have Linux images running in containers with the help of Hyper-V, which automatically creates small VM to virtualize the system's base image.
+
+Docker Architecture:
+====================
+Docker Engine:
+--------------
+Docker daemon called "dockerd" is the Docker engine which represents the server. Docker is the client-server type of application which means we have clients who relay to the server. The docker daemon and the clients can be run on the same or remote host, and they communicate through command line client binary.
+
+Docker Images:
+--------------
+Docker images are the "source code" for the containers; we use them to build containers.
+They can have software pre-installed which speeds up deployment. They are portable, and we can use existing images or build our own.
+
+
+Registries:
+------------
+Docker stores the images in registries, publicly known as Docker hub. There are public and private registries. 
+Docker company has public registry called Docker hub, where you can also store your images privately. 
+Docker hub has millions of images, which you can start using now.
+
+Docker Containers:
+------------------
+Containers are the organizational units of Docker. 
+When we build an image and start running it; we are running in a container.
+In simple terms, an image is a template, and a container is a copy of that template. You can have multiple containers (copies) of the same image.
+
+
+
+=====================
+
+Docker is available in two edition.
+-> Community Edition. Its free.
+-> Enterprise Edition, its paid. YOu need a subscription to use it.
+
 Follow the steps with subscription
 
-2nd AMI machine in AWs which contains docker in it.
+2nd AMI machine in AWS which contains docker in it.
 
-yum install docker -y
+$ yum install docker -y
 
 ducker hub (https://hub.docker.com/)
 Its a repository, Many developer develop images and publish in it.
@@ -21,9 +58,6 @@ docker images list the docker images under the base server(AWS AMI2)
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 
 To list the running container: 
-[root@ip-172-31-3-66 ~]# docker ps
-CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-
 
 To list all the container(running and stopped one) 
 [root@ip-172-31-3-66 ~]# docker ps -a
@@ -59,15 +93,13 @@ docker run image_name
 
 Ex: docker run httpd
 
-It will run in interactive mode. 
+It will run in interactive terminal. 
 Which is internally "docker run -i -t httpd"
 
 docker run -d image_file  # -d is for detach
 
 [root@ip-172-31-3-66 ~]# docker run -d httpd
 2d893d050c4eaacc1d81400f703440324ee0237f539ce6915b3e212596309dbc
-[root@ip-172-31-3-66 ~]#
-
 
 
 [root@ip-172-31-3-66 ~]# docker ps
@@ -86,14 +118,14 @@ a3088102851a        httpd               "httpd-foreground"   9 minutes ago      
 
 Q. What is the diff bet ps and ps -a
 
-To remove a container.
+#	To remove a container.
 
 [root@ip-172-31-3-66 ~]# docker rm -f 2d893d050c4e a3088102851a
 2d893d050c4e
 a3088102851a
 
 
-How to assign a name 
+#	How to assign a name 
 [root@ip-172-31-3-66 ~]# docker run --name myFirstCont -d httpd
 
 Note: Always the last word in the command is docker image file name.
@@ -104,3 +136,10 @@ CONTAINER ID        IMAGE               COMMAND              CREATED            
 fc82794c6cd2        httpd               "httpd-foreground"   5 seconds ago       Up 5 seconds        80/tcp              myFirstCont
 
 
+### this cmd is to start the running container.
+[root@ip-172-31-3-66 ~]# docker exec -it myFirstCont /bin/bash
+
+
+root@fc82794c6cd2:/usr/local/apache2#
+
+#Container OS is Ubuntu. 
