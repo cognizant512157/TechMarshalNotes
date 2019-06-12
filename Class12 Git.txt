@@ -143,6 +143,17 @@ Changes not staged for commit:
 
 no changes added to commit (use "git add" and/or "git commit -a")
 
+$ git diff
+diff --git a/newFile1.txt b/newFile1.txt
+index f570290..72a23f5 100644
+--- a/newFile1.txt
++++ b/newFile1.txt
+@@ -2,6 +2,3 @@ First 100 lines of the code.
+ Second 200 lines of the code.
+-hi
+-hello
+-bye
+
 
 $ git add .
 warning: LF will be replaced by CRLF in newFile1.txt.
