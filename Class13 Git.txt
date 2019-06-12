@@ -1,76 +1,79 @@
 13th Class (Dt: 05 June 2019)
 ---------------------------
-Continuation of topic Git Repository
+--> Git Repository class continue....
 
+Commands discuss in the class:
+------------------------------
+$ mkdir demo_repo2
 
-mkdir demo_repo2
-git clone https://github.com/shinyay/maven-javaee8-webapp.git
+$ cd demo_repo2
 
+$ git clone https://github.com/shinyay/maven-javaee8-webapp.git
 
-mkdir demo_repo4
+$ mkdir demo_repo4
 
-vi file1
+$ vi file1
 adding the first line 
 
-git add file1
+$ git add file1
 
-git init
+$ git init
 
-git add file1
+$ git add file1
 
-git status
+$ git status
 
-git commit -m "add few lines in file1" file1
+$ git commit -m "add few lines in file1" file1
 
-git status
+$ git status
 
-git push
+$ git push
 
-git remote add origin https://github.com/satyakaibm/NewTestRepo.git
+$ git remote add origin https://github.com/satyakaibm/NewTestRepo.git
 
-git push -u origin master
+$ git push -u origin master
 
-git log --oneline
+$ git log --oneline
 
-vi file1
+$ vi file1
 adding the first line 
 adding the second line 
 
-git add .
+$ git add .
 
-git commit -m "added 2nd line now" file1
+$ git commit -m "added 2nd line now" file1
 
-git log --oneline
+$ git log --oneline
 
-git reset 48ff4f0
+$ git reset 48ff4f0
 
-git log --oneline
-
-
-git diff 88f813f 2c087ed
-
-git reset 88f813f
-
-git tag v1.6
-
-git log --oneline
+$ git log --oneline
 
 
-git tag v1.5 2c087ed
+$ git diff 88f813f 2c087ed
 
-git tag v1.4 dca2ae8
+$ git reset 88f813f
 
-git tag v1.3 64faca7
+$ git tag v1.6
 
-git tag v1.2 48ff4f0
+$ git log --oneline
 
-git tag v1.1 f78a9fe
 
-git tag v1.248ff4f0
+$ git tag v1.5 2c087ed
 
-git tag delete v1.248ff4f0
+$ git tag v1.4 dca2ae8
 
-ls -lart
+$ git tag v1.3 64faca7
+
+$ git tag v1.2 48ff4f0
+
+$ git tag v1.1 f78a9fe
+
+$ git tag v1.248ff4f0
+
+$ git tag delete v1.248ff4f0
+
+$ ls -lart
 total 13
 drwxr-xr-x 1 User 197610   0 Jun 11 00:28 ./
 drwxr-xr-x 1 User 197610   0 Jun 10 12:41 ../
@@ -78,12 +81,10 @@ drwxr-xr-x 1 User 197610   0 Jun 10 12:41 ../
 drwxr-xr-x 1 User 197610   0 Jun 11 00:29 .git/
 
 
-rm -rf .git
+$ rm -rf .git
 
-
-
-
-
+========================================================
+Practical with details of each steps:
 
 $ mkdir demo_repo2
 
@@ -149,13 +150,17 @@ $ git branch -a
 $ git checkout devBranch1.0
 Switched to branch 'devBranch1.0'
 
-$ git branch
+$ git branch -a
 * devBranch1.0
   master
 
 $ vi testFile.txt
 Hello, First Line added by developer1
 Second line added by Tester1
+
+
+$ git diff
+
 
 $ git add testFile.txt
 
@@ -331,6 +336,7 @@ Fourth line added by UI developer.
 
 $ git checkout devBranch1.0
 
+
 $ git pull https://github.com/satyakaibm/demo_repo2.git
 From https://github.com/satyakaibm/demo_repo2
  * branch            HEAD       -> FETCH_HEAD
@@ -361,13 +367,16 @@ Second line added by Tester1
 Third line added by developer2
 Fourth line added by UI developer.
 
+
 $ git status
 On branch devBranch1.0
 Your branch is up to date with 'origin/devBranch1.0'.
 nothing to commit, working tree clean
 
 
-#### Now we will see how to revert to prev version
+
+
+#--->How to revert to prev version
 
 $ git checkout master
 Switched to branch 'master'
@@ -407,6 +416,152 @@ hint: 'git pull ...') before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
 
 
+
+##################################
+---> Now this is a conflict scenario. 
+The code in local git and staging git is not matching.
+SME or Project Architecture will resolve the confliction of the code.
+Then he will merge the branches and push to remote (github).
+##################################
+
+$ vi testFile.txt
+Fourth line added by UI developer.
+
+-->remove the last line.
+
+$ git add .
+
+$ git commit -m "reset to prev ver" testFile.txt
+[master 0d801d1] reset to prev ver
+ 1 file changed, 1 deletion(-)
+
+$ git log --oneline
+0d801d1 (HEAD -> master) reset to prev ver
+7bfc1d0 (origin/master, origin/devBranch1.0, devBranch1.0) Fourth line added by UI developer
+1585c51 developer2 added third line
+d0b1662 (tag: v1.1) Tester added a line
+6037419 This is test file for practice
+
+
+$ git push
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (3/3), 283 bytes | 70.00 KiB/s, done.
+Total 3 (delta 1), reused 0 (delta 0)
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+To https://github.com/satyakaibm/demo_repo2.git
+   7bfc1d0..0d801d1  master -> master
+
+
+$ git checkout devBranch1.0
+Switched to branch 'devBranch1.0'
+Your branch is up to date with 'origin/devBranch1.0'.
+
+
+$ cat testFile.txt
+Hello, First Line added by developer1
+Second line added by Tester1
+Third line added by developer2
+Fourth line added by UI developer.
+
+
+$ git merge master
+Updating 7bfc1d0..0d801d1
+Fast-forward
+ testFile.txt | 1 -
+ 1 file changed, 1 deletion(-)
+
+
+$ cat testFile.txt
+Hello, First Line added by developer1
+Second line added by Tester1
+Third line added by developer2
+
+
+$ git status
+On branch devBranch1.0
+Your branch is ahead of 'origin/devBranch1.0' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+
+
+$ git push
+Total 0 (delta 0), reused 0 (delta 0)
+To https://github.com/satyakaibm/demo_repo2.git
+   7bfc1d0..0d801d1  devBranch1.0 -> devBranch1.0
+
+
+$ git log --oneline
+0d801d1 (HEAD -> devBranch1.0, origin/master, origin/devBranch1.0, master) reset to prev ver
+7bfc1d0 Fourth line added by UI developer
+1585c51 developer2 added third line
+d0b1662 (tag: v1.1) Tester added a line
+6037419 This is test file for practice
+
+
+-> Scenario to remove deleted files from git status
+=====================================================
+$ ls -lrt 
+-rw-r--r-- 1 User 197610    3156 Jun 10 16:13 'Class13 history.txt 
+-rw-r--r-- 1 User 197610    3156 Jun 10 16:13 'Class14.txt
+ 
+$ git rm -f Class13\ history.txt
+rm 'Class13 history.txt'
+
+
+$ git rm -f Class14.txt
+rm 'Class14.txt'
+
+
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        deleted:    Class13 history.txt
+        deleted:    Class14.txt
+
+
+$ git add -u
+
+#Note: -u tells git to automatically stage all changes to files in the index (eg. deleted and modified files). 
+See: 
+http://stackoverflow.com/questions/1402776/how-do-i-commit-all-deleted-files-in-git 
+http://kernel.org/pub/software/scm/git/docs/git-add.html
+
+'git add -u' is a beautifully simple way to accomplish the original goal - remove files that have been deleted on the filesystem. If you have new files to add to the commit after that you can always `git add .` afterward
+
+
+$ git commit -m "Class13 history  got deleted"
+[master 96bf8bd] Class13 history  got deleted
+ 2 files changed, 265 deletions(-)
+ delete mode 100644 Class13 history.txt
+ delete mode 100644 Class14.txt
+
+$ git push
+Enumerating objects: 3, done.
+Counting objects: 100% (3/3), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (2/2), 248 bytes | 124.00 KiB/s, done.
+Total 2 (delta 1), reused 0 (delta 0)
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+remote: This repository moved. Please use the new location:
+remote:   https://github.com/satyakaibm/TechMarshalNotes.git
+
+
+
+
+
+
+
+--> Some weblinks on the git 
+============================
 https://code.likeagirl.io/how-to-undo-the-last-commit-393e7db2840b
 
 
@@ -414,3 +569,54 @@ https://www.git-tower.com/learn/git/faq/restore-repo-to-previous-revision
 
 
 https://opensource.com/article/18/6/git-reset-revert-rebase-commands
+
+
+https://stackoverflow.com/questions/8085830/how-to-remove-deleted-files-from-showing-up-in-my-local-git-status
+
+To reset the entire repository to the last committed state:
+
+$	git reset --hard
+
+To remove untracked files, I usually just delete all files in the working copy (but not the .git/ folder!), then do git reset --hard which leaves it with only committed files.
+
+
+A better way is to use git clean: (Warning: using the -x flag as below will cause git to delete ignored files
+$	git clean -d -x -f
+
+
+
+How to remove local (untracked) files from the current Git working tree?
+
+Step 1 is to show what will be deleted by using the -n option:
+
+# Print out the list of files which will be removed (dry run)
+git clean -n
+
+
+
+
+Clean Step - beware: this will delete files:
+
+# Delete the files from the repository forcefully
+git clean -f
+
+To remove directories, run 
+git clean -f -d 
+	or 
+git clean -fd
+
+To remove ignored files, run 
+git clean -f -X 
+	or 
+git clean -fX
+
+To remove ignored and non-ignored files, run 
+git clean -f -x 
+	or 
+git clean -fx
+
+
+learn "git ignore"
+
+
+How do I clear my local working directory in git? [duplicate]
