@@ -93,10 +93,17 @@ docker run image_name
 
 Ex: docker run httpd
 
-It will run in interactive terminal. 
-Which is internally "docker run -i -t httpd"
+[root@ip-172-31-3-66 ~]# docker run httpd
+AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.2. Set the 'ServerName' directive globally to suppress this message
+AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.2. Set the 'ServerName' directive globally to suppress this message
+[Thu Jun 13 09:59:22.446579 2019] [mpm_event:notice] [pid 1:tid 140624013541440] AH00489: Apache/2.4.39 (Unix) configured -- resuming normal operations
+[Thu Jun 13 09:59:22.446852 2019] [core:notice] [pid 1:tid 140624013541440] AH00094: Command line: 'httpd -D FOREGROUND'
+[Thu Jun 13 09:59:24.499390 2019] [mpm_event:notice] [pid 1:tid 140624013541440] AH00491: caught SIGTERM, shutting down
 
-docker run -d image_file  # -d is for detach
+
+## It will run in interactive mode if you don't mention anything, Which is internally "docker run -i -t httpd"
+
+docker run -d image_file  # -d is for detach mode
 
 [root@ip-172-31-3-66 ~]# docker run -d httpd
 2d893d050c4eaacc1d81400f703440324ee0237f539ce6915b3e212596309dbc
@@ -117,16 +124,32 @@ a3088102851a        httpd               "httpd-foreground"   9 minutes ago      
 
 
 Q. What is the diff bet ps and ps -a
+ps -a will show all the container which has stopped as well running one.
+ps will show the running container only.
 
-#	To remove a container.
 
+# To stop a container.
+[root@ip-172-31-3-66 ~]# docker container stop -t 10 f6be2057433d
+f6be2057433d
+[root@ip-172-31-3-66 ~]# docker container stop -t 10 79229001f974
+79229001f974
+
+
+# To remove a container.
 [root@ip-172-31-3-66 ~]# docker rm -f 2d893d050c4e a3088102851a
 2d893d050c4e
 a3088102851a
 
 
-#	How to assign a name 
+# To remove all the containers in one command.
+[root@ip-172-31-3-66 ~]# docker rm -f $(docker ps -aq)
+f6be2057433d
+79229001f974
+
+
+# How to assign a name to a container 
 [root@ip-172-31-3-66 ~]# docker run --name myFirstCont -d httpd
+
 
 Note: Always the last word in the command is docker image file name.
 
@@ -136,10 +159,9 @@ CONTAINER ID        IMAGE               COMMAND              CREATED            
 fc82794c6cd2        httpd               "httpd-foreground"   5 seconds ago       Up 5 seconds        80/tcp              myFirstCont
 
 
-### this cmd is to start the running container.
+# To execute a container (loging into) which is started.
 [root@ip-172-31-3-66 ~]# docker exec -it myFirstCont /bin/bash
-
 
 root@fc82794c6cd2:/usr/local/apache2#
 
-#Container OS is Ubuntu. 
+#Here the container OS is Ubuntu.
