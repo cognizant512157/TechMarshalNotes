@@ -5,19 +5,30 @@ Docker container continuation...
 Q. What is port forwarding in Linux?
 
 We can add -p in docker run cmd and it would be port forwarding.
+Ex: docker run -p 81:80 -d httpd
 
 81:80
--> 81 is base os port no 
--> 80 is the httpd port of container OS
+-> Base OS port no: 80 
+-> Container OS port no: 81
 
 
+Before assign any port check whether it's available or not.
 Unix cmds for port no checking: netstat
+
+
+[root@ip-172-31-3-66 ~]# netstat -an |grep 22
+tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN
+
+We know SSH running on port no.22
+
+--> Search in google what are the basic port number are assigned for different applications such as SSH, tomcat, httpd, jenkins, etc.
 
 
 [root@ip-172-31-3-66 ~]# netstat -an |grep 81
 unix  2      [ ACC ]     STREAM     LISTENING     11881  /var/run/docker/metrics.sock
 
 ### It means there is nothing running on port 81
+
 
 
 [root@ip-172-31-3-66 ~]# docker images
@@ -33,9 +44,6 @@ a3e1e4ca2a20        httpd               "httpd-foreground"   23 seconds ago     
 fc82794c6cd2        httpd               "httpd-foreground"   23 hours ago        Exited (0) 22 hours ago                        myFirstCont
 
 
-[root@ip-172-31-3-66 ~]# netstat -an |grep 22
-tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN
-
 
 [root@ip-172-31-3-66 ~]# netstat -an |grep -w 81
 tcp        0      0 :::81                       :::*                        LISTEN
@@ -46,12 +54,25 @@ CONTAINER ID        IMAGE               COMMAND              CREATED            
 a3e1e4ca2a20        httpd               "httpd-foreground"   6 minutes ago       Up 6 minutes        0.0.0.0:81->80/tcp   mySecondCont
 
 
+Check the http page in the browser (publicIP:81)
 
-docker exec -it containerName/ID
-### this cmd is to start the running container.
+http://13.232.56.202:81/
+It works
+
+
+
+# To execute a container (loging into) which is started.
+Syntax: docker exec -it containerName/ID
 
 [root@ip-172-31-3-66 ~]# docker exec -it mySecondCont /bin/bash
 
+root@a3e1e4ca2a20:/usr/local/apache2#
+
+# Here httpd container OS is Ubuntu and this container OS is very light weight OS; it loaded with basic softwares which can only supports http services here. 
+
+
+Change the index.html file of http service:
+-------------------------------------------
 root@a3e1e4ca2a20:/usr/local/apache2# cd htdocs/
 
 root@a3e1e4ca2a20:/usr/local/apache2/htdocs# ls -lrt
@@ -63,8 +84,12 @@ root@a3e1e4ca2a20:/usr/local/apache2/htdocs# cat index.html
 
 root@a3e1e4ca2a20:/usr/local/apache2/htdocs# apt update
 
-root@a3e1e4ca2a20:/usr/local/apache2/htdocs# apt install vim
+By default 'vi' isn't installed in Container OS, because as we said it's a light weight OS. 
+Now we will install vim which internally vi cmd.
 
+root@a3e1e4ca2a20:/usr/local/apache2/htdocs# apt install vim -y
+
+-> Edit the index file as per our demand.
 root@a3e1e4ca2a20:/usr/local/apache2/htdocs# vi index.html
 <!DOCTYPE html>
 <html>
@@ -82,7 +107,7 @@ root@a3e1e4ca2a20:/usr/local/apache2/htdocs# vi index.html
 http://13.232.56.202:81/
 
 
-"13.232.56.202" is the public ip of AWS Linux machine.
+"13.232.56.202" is the public ip of AWS Linux machine and '81' is port which is forwarded port to container os port '80'
 
 
 root@a3e1e4ca2a20:/usr/local/apache2/htdocs# exit
@@ -91,28 +116,15 @@ root@a3e1e4ca2a20:/usr/local/apache2/htdocs# exit
 a3e1e4ca2a20
 
 
-Scenario 2:
+Scenario 2: Now in base OS we will create "index.html" and copy it to the container image.
 ===========
-In base OS we will create index.html and copy it to container image.
+Step1: Create another container for httpd
 
-Step1: Create a container first for httpd.
-
-"/usr/local/apache2" is the home path if you create a httpd container image only.
-
-Step2:
-docker  cp   /tmp/index.html  containerName/ID:/usr/local/apache2/htdocs/ 
+[root@ip-172-31-3-66 ~]# docker run -d --name httpCont -p 82:80 httpd
 
 
+Step2: Write your own index.html file under '/tmp' folder in base machine and copy it to the container image.
 
-Step3:
-[root@ip-172-31-3-66 ~]# docker run -d --name httpCont -p 81:80 httpd
-
-
-[root@ip-172-31-3-66 ~]# docker ps -a
-CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                NAMES
-7a1f192285df        httpd               "httpd-foreground"   7 seconds ago       Up 6 seconds        0.0.0.0:81->80/tcp   httpCont
-
-In base OS:
 vi /tmp/index.html
 <!DOCTYPE html>
 <html>
@@ -126,21 +138,30 @@ vi /tmp/index.html
 </html>
 
 
-docker  cp   /tmp/index.html  7a1f192285df:/usr/local/apache2/htdocs/ 
+Syntax:
+# docker  cp   /tmp/index.html  containername:/usr/local/apache2/htdocs/ 
 
-Check the http page in the browser.
-http://13.232.56.202:81/
+# "/usr/local/apache2" is the home path of httpd container image.
+
+
+[root@ip-172-31-3-66 ~]# docker ps -a
+CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                NAMES
+7a1f192285df        httpd               "httpd-foreground"   7 seconds ago       Up 6 seconds        0.0.0.0:81->80/tcp   httpCont
+
+[root@ip-172-31-3-66 ~]# docker  cp   /tmp/index.html  httpCont:/usr/local/apache2/htdocs/ 
+
+
+Step3: Check the http page in the browser. 
+
+http://13.232.56.202:82/
 
 This is a Heading
 This is a paragraph.
 
 
-Scenario 3: Volume
-===================
-
-To remove all the docker container in a single time
-docker rm -f $(docker ps -aq)
-
+Scenario 3: Volume Mapping
+==========================
+Here we will see:- Create one folder and keep our index.html file under it and then map this folder to all the containers.
 
 Now create 3 containers on diff base ip
 81:80
@@ -149,11 +170,30 @@ Now create 3 containers on diff base ip
 
 [root@ip-172-31-3-66 ~]# mkdir /mydir
 
-
+# Write the volume mapping cmd?
 
 So here if you modify index.html will reflect in all 3 container.
 
 Think there are 30 containers, and you want to reveal the contents in all 30 container, then this volume mapping is helpful.
+
+
+
+
+To stop the container:
+======================
+[root@ip-172-31-3-66 ~]# docker ps
+CONTAINER ID        IMAGE                             COMMAND             CREATED             STATUS              PORTS                    NAMES
+f6be2057433d        myhttpd:1.0                       "/bin/bash"         4 hours ago         Up 4 hours          0.0.0.0:81->80/tcp       elastic_easley
+
+79229001f974        prashanth121rp/mytomcatrepo:1.0   "catalina.sh run"   5 hours ago         Up 5 hours          0.0.0.0:8081->8080/tcp   silly_curran
+
+
+[root@ip-172-31-3-66 ~]# docker container stop -t 10  f6be2057433d
+f6be2057433d
+
+
+[root@ip-172-31-3-66 ~]# docker container stop -t 10  79229001f974
+79229001f974
 
 
 Home exercise
