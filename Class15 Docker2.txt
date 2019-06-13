@@ -35,6 +35,8 @@ unix  2      [ ACC ]     STREAM     LISTENING     11881  /var/run/docker/metrics
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 httpd               latest              3bd2a941224f        4 days ago          140MB
 
+
+
 [root@ip-172-31-3-66 ~]# docker run --name mySecondCont -p 81:80 -d httpd
 a3e1e4ca2a20b92413db5ff84521e8cc89197edecb2d4f4a0a83f38e0e4b8d1b
 
@@ -68,11 +70,28 @@ Syntax: docker exec -it containerName/ID
 
 root@a3e1e4ca2a20:/usr/local/apache2#
 
-# Here httpd container OS is Ubuntu and this container OS is very light weight OS; it loaded with basic softwares which can only supports http services here. 
+# Here httpd container OS is Debian and this container OS is very light weight OS; it loaded with basic softwares which can only supports http services here. 
+
+# How to check which OS is it.
+
+root@b86e746450a6:~# cat /etc/*release
+PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
+NAME="Debian GNU/Linux"
+VERSION_ID="9"
+VERSION="9 (stretch)"
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
 
 
-Change the index.html file of http service:
--------------------------------------------
+# If it is Ubuntu OS
+$ lsb_release -a
+
+Scenario 1: Change the index.html file of http service
+======================================================
+# This is a debian server.
+
 root@a3e1e4ca2a20:/usr/local/apache2# cd htdocs/
 
 root@a3e1e4ca2a20:/usr/local/apache2/htdocs# ls -lrt
@@ -94,13 +113,17 @@ root@a3e1e4ca2a20:/usr/local/apache2/htdocs# vi index.html
 <!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+<title>My Page</title>
 </head>
 <body>
-<h1>This is a Heading</h1>
-<p>This is a paragraph.</p>
+    <h2>Devops Engineer</h2>
+    <p>Tell me about yourself</p>
+    <p>What do you know about Devops</p>
+    <p>What is the benefit of Devops</p>
 </body>
 </html>
+#save and exit 
+
 
 
 ### Check the page in browser
@@ -117,43 +140,46 @@ a3e1e4ca2a20
 
 
 Scenario 2: Now in base OS we will create "index.html" and copy it to the container image.
-===========
-Step1: Create another container for httpd
+===========================================================================================
+Step1: In Base Linux os, write your own index.html file under '/tmp' folder and copy it your existing container.
+------
+[root@ip-172-31-3-66 ~]# vi /tmp/index.html
 
-[root@ip-172-31-3-66 ~]# docker run -d --name httpCont -p 82:80 httpd
-
-
-Step2: Write your own index.html file under '/tmp' folder in base machine and copy it to the container image.
-
-vi /tmp/index.html
 <!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+<title>My Page</title>
 </head>
 <body>
-<h1>This is a Heading</h1>
-<p>This is a paragraph.</p>
+ <h1>This is a Heading</h1>
+ <p>This is a paragraph.</p>
 </body>
 </html>
+
+#save and exit 
+
+
+Step2:
+------
+[root@ip-172-31-3-66 ~]# docker ps -a
+CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                NAMES
+7a1f192285df        httpd               "httpd-foreground"   7 seconds ago       Up 6 seconds        0.0.0.0:81->80/tcp   httpCont
+
+
+[root@ip-172-31-3-66 ~]# docker  cp   /tmp/index.html  httpCont:/usr/local/apache2/htdocs/ 
 
 
 Syntax:
 # docker  cp   /tmp/index.html  containername:/usr/local/apache2/htdocs/ 
 
-# "/usr/local/apache2" is the home path of httpd container image.
-
-
-[root@ip-172-31-3-66 ~]# docker ps -a
-CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                NAMES
-7a1f192285df        httpd               "httpd-foreground"   7 seconds ago       Up 6 seconds        0.0.0.0:81->80/tcp   httpCont
-
-[root@ip-172-31-3-66 ~]# docker  cp   /tmp/index.html  httpCont:/usr/local/apache2/htdocs/ 
+# "/usr/local/apache2/htdocs" is the lookup path where browser by default search for a html file.
+index.html file is UI file.
 
 
 Step3: Check the http page in the browser. 
+------
 
-http://13.232.56.202:82/
+http://13.232.56.202:81/
 
 This is a Heading
 This is a paragraph.
@@ -161,7 +187,7 @@ This is a paragraph.
 
 Scenario 3: Volume Mapping
 ==========================
-Here we will see:- Create one folder and keep our index.html file under it and then map this folder to all the containers.
+Here we will see:- Create one central folder and keep our index.html file inside it and then map this folder to all the containers.
 
 Now create 3 containers on diff base ip
 81:80
@@ -176,7 +202,7 @@ So here if you modify index.html will reflect in all 3 container.
 
 Think there are 30 containers, and you want to reveal the contents in all 30 container, then this volume mapping is helpful.
 
-
+https://docs.docker.com/storage/volumes/
 
 
 To stop the container:
@@ -201,8 +227,7 @@ Home exercise
 Tomcat container
 download the benefits.war and copy it to the tomcat container.
 
-First do it manually.
-then do it automatic
+First do it manually, then do it automatic
 
 docker run -d -p 8081:8080 tomcat
 
@@ -210,10 +235,4 @@ play with docker cp
 
 download the benefits.war file into /tmp folder
 
-After that play with volumes
-
-
-
-
-Tomorrow we will going to see what is docker-compose
-Day after tomorrow 
+After that play with volume mapping
