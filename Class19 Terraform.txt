@@ -1,0 +1,554 @@
+19th Class (Dt: 15 June 2019)
+-----------------------------
+Today topic is Terraform
+
+Terraform is an open-source infrastructure as code software tool created by HashiCorp.
+It enables users to define and provision a datacenter infrastructure using a high-level configuration language known as Hashicorp Configuration Language (HCL), or optionally JSON.
+
+Terraform supports a number of cloud infrastructure providers such as Amazon Web Services, IBM Cloud, Google Cloud Platform, Linode,
+Microsoft Azure, Oracle Cloud Infrastructure, or VMware vSphere as well as OpenStack.
+
+Write, Plan, and Create Infrastructure as Code by terraform.
+
+
+Its a 2rd party tool which is compatible to many cloud toool.
+
+Terraform work as a Infrastructure provision tool. Cloud formation is a Infrastructure provision tool in AWS.
+
+It's helpful at the time of disaster recovery.
+
+Internaly the terraform script is domain specific language. Save as '.tf' script.
+
+
+AWS -> EC2 -> Launch below AMI->
+Amazon Linux AMI 2018.03.0 (HVM), SSD Volume Type - ami-0eacc5b7915ba9921
+###### The default image includes AWS command line tools, Python, Ruby, Perl, and Java.
+
+##### Give the name as Terraform Server in EC2 instance.
+
+
+[root@ip-172-31-19-242 ~]# aws --version
+aws-cli/1.16.102 Python/2.7.16 Linux/4.14.114-83.126.amzn1.x86_64 botocore/1.12.92
+
+[root@ip-172-31-19-242 ~]# mkdir terraform_software
+
+[root@ip-172-31-19-242 ~]# cd terraform_software/
+
+##### Open the below page to download the terraform. 
+  https://www.terraform.io/downloads.html
+
+##### Copy the link address for Linux machine.
+
+[root@ip-172-31-19-242 terraform_software]# wget https://releases.hashicorp.com/terraform/0.12.2/terraform_0.12.2_linux_amd64.zip
+--2019-06-15 02:32:29--  https://releases.hashicorp.com/terraform/0.12.2/terraform_0.12.2_linux_amd64.zip
+Resolving releases.hashicorp.com (releases.hashicorp.com)... 151.101.153.183, 2a04:4e42:24::439
+Connecting to releases.hashicorp.com (releases.hashicorp.com)|151.101.153.183|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 16018372 (15M) [application/zip]
+Saving to: ‘terraform_0.12.2_linux_amd64.zip’
+
+terraform_0.12.2_linux_amd64.zip  100%[===========================================================>]  15.28M  71.0MB/s    in 0.2s
+
+2019-06-15 02:32:29 (71.0 MB/s) - ‘terraform_0.12.2_linux_amd64.zip’ saved [16018372/16018372]
+
+[root@ip-172-31-19-242 terraform_software]# ls -l
+total 15644
+-rw-r--r-- 1 root root 16018372 Jun 12 20:13 terraform_0.12.2_linux_amd64.zip
+
+
+[root@ip-172-31-19-242 terraform_software]# unzip terraform_0.12.2_linux_amd64.zip
+Archive:  terraform_0.12.2_linux_amd64.zip
+  inflating: terraform
+
+[root@ip-172-31-19-242 terraform_software]# ls -l
+total 63496
+-rwxrwxr-x 1 root root 48990304 Jun 12 20:12 terraform
+-rw-r--r-- 1 root root 16018372 Jun 12 20:13 terraform_0.12.2_linux_amd64.zip
+
+
+# We have to set the env variable for terraform executable file into PATH env variable, then it can run from anywhere.
+
+[root@ip-172-31-19-242 terraform_software]# terraform
+-bash: terraform: command not found
+
+[root@ip-172-31-19-242 terraform_software]# pwd
+/root/terraform_software
+
+[root@ip-172-31-19-242 terraform_software]# vi ~/.bash_profile
+PATH=$PATH:$HOME/bin:$HOME/terraform_software
+export PATH
+
+[root@ip-172-31-19-242 terraform_software]# source ~/.bash_profile
+
+[root@ip-172-31-19-242 terraform_software]# ./terraform --version
+Terraform v0.12.2
+
+
+In AWS 
+-------
+Services -> IAM-> Delete your root access keys -> Manage Security Credentials -> Continue to Security Credentials
+Expand the "Access keys (access key ID and secret access key)"-> Create New Access key -> Show access key
+
+In My AWS account, it is:
+Access Key ID: AKIAJBAOMQ4GH6RZWQHQ
+Secret Access Key: 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
+
+2nd time when I create:
+Access Key ID: AKIAII2G5ESNGXP46YXQ
+Secret Access Key: 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
+
+--> Keep it with you.
+
+This the terraform script, where it defines:
+
+access key and secret_key which I collected from AWS IAM service.
+region: I am using Mumbai region, so it's region id is: ap-south-1
+
+resource: aws_instance and give some name of instance, here it's terraform_example
+ami: In which AWS instance you are going to deploy your service, that ami name. Here, I initiated terraform instance in Amazon Linux AMI (Amazon Linux AMI 2018.03.0 (HVM), SSD Volume Type - ami-0eacc5b7915ba9921), but I want deploy it into Red Hat Linux instance (Red Hat Enterprise Linux 7.5 (HVM), SSD Volume Type - ami-5b673c34)
+
+instance_type is t2.micro
+
+
+create_inst.tf
+===============
+provider "aws" {
+  access_key = "AKIAJBAOMQ4GH6RZWQHQ"
+  secret_key = "iA2lZ3oAMS9Hytv3oG9W9HwjkcJbx+BNgrmtGGA0"
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "terraform_example" {
+  ami = "ami-5b673c34"
+  instance_type = "t2.micro"
+}
+
+
+In console:
+------------
+[root@ip-172-31-19-242 opt]# mkdir myTerraProj
+[root@ip-172-31-19-242 opt]# cd myTerraProj/
+
+[root@ip-172-31-19-242 myTerraProj]# vi create_inst.tf
+provider "aws" {
+  access_key = "AKIAJBAOMQ4GH6RZWQHQ"
+  secret_key = "iA2lZ3oAMS9Hytv3oG9W9HwjkcJbx+BNgrmtGGA0"
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "terraform_example" {
+  ami = "ami-5b673c34"
+  instance_type = "t2.micro"
+}
+
+
+====================================================
+
+[root@ip-172-31-19-242 myTerraProj]# terraform init
+
+Initializing the backend...
+
+Initializing provider plugins...
+- Checking for available provider plugins...
+- Downloading plugin for provider "aws" (terraform-providers/aws) 2.15.0...
+
+The following providers do not have any version constraints in configuration,
+so the latest version was installed.
+
+To prevent automatic upgrades to new major versions that may contain breaking
+changes, it is recommended to add version = "..." constraints to the
+corresponding provider blocks in configuration, with the constraint strings
+suggested below.
+
+* provider.aws: version = "~> 2.15"
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+====================================================
+
+[root@ip-172-31-19-242 myTerraProj]# terraform plan
+Refreshing Terraform state in-memory prior to plan...
+The refreshed state will be used to calculate this plan, but will not be
+persisted to local or remote state storage.
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_instance.terraform_example will be created
+  + resource "aws_instance" "terraform_example" {
+      + ami                          = "ami-5b673c34"
+      + arn                          = (known after apply)
+      + associate_public_ip_address  = (known after apply)
+      + availability_zone            = (known after apply)
+      + cpu_core_count               = (known after apply)
+      + cpu_threads_per_core         = (known after apply)
+      + get_password_data            = false
+      + host_id                      = (known after apply)
+      + id                           = (known after apply)
+      + instance_state               = (known after apply)
+      + instance_type                = "t2.micro"
+      + ipv6_address_count           = (known after apply)
+      + ipv6_addresses               = (known after apply)
+      + key_name                     = (known after apply)
+      + network_interface_id         = (known after apply)
+      + password_data                = (known after apply)
+      + placement_group              = (known after apply)
+      + primary_network_interface_id = (known after apply)
+      + private_dns                  = (known after apply)
+      + private_ip                   = (known after apply)
+      + public_dns                   = (known after apply)
+      + public_ip                    = (known after apply)
+      + security_groups              = (known after apply)
+      + source_dest_check            = true
+      + subnet_id                    = (known after apply)
+      + tenancy                      = (known after apply)
+      + volume_tags                  = (known after apply)
+      + vpc_security_group_ids       = (known after apply)
+
+      + ebs_block_device {
+          + delete_on_termination = (known after apply)
+          + device_name           = (known after apply)
+          + encrypted             = (known after apply)
+          + iops                  = (known after apply)
+          + snapshot_id           = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = (known after apply)
+          + volume_type           = (known after apply)
+        }
+
+      + ephemeral_block_device {
+          + device_name  = (known after apply)
+          + no_device    = (known after apply)
+          + virtual_name = (known after apply)
+        }
+
+      + network_interface {
+          + delete_on_termination = (known after apply)
+          + device_index          = (known after apply)
+          + network_interface_id  = (known after apply)
+        }
+
+      + root_block_device {
+          + delete_on_termination = (known after apply)
+          + iops                  = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = (known after apply)
+          + volume_type           = (known after apply)
+        }
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+==========================================================
+
+Note:
+# put 'yes' when it will ask you for 
+# Enter a value: yes
+
+------------------------------------
+
+[root@ip-172-31-19-242 myTerraProj]# terraform apply
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_instance.terraform_example will be created
+  + resource "aws_instance" "terraform_example" {
+      + ami                          = "ami-5b673c34"
+      + arn                          = (known after apply)
+      + associate_public_ip_address  = (known after apply)
+      + availability_zone            = (known after apply)
+      + cpu_core_count               = (known after apply)
+      + cpu_threads_per_core         = (known after apply)
+      + get_password_data            = false
+      + host_id                      = (known after apply)
+      + id                           = (known after apply)
+      + instance_state               = (known after apply)
+      + instance_type                = "t2.micro"
+      + ipv6_address_count           = (known after apply)
+      + ipv6_addresses               = (known after apply)
+      + key_name                     = (known after apply)
+      + network_interface_id         = (known after apply)
+      + password_data                = (known after apply)
+      + placement_group              = (known after apply)
+      + primary_network_interface_id = (known after apply)
+      + private_dns                  = (known after apply)
+      + private_ip                   = (known after apply)
+      + public_dns                   = (known after apply)
+      + public_ip                    = (known after apply)
+      + security_groups              = (known after apply)
+      + source_dest_check            = true
+      + subnet_id                    = (known after apply)
+      + tenancy                      = (known after apply)
+      + volume_tags                  = (known after apply)
+      + vpc_security_group_ids       = (known after apply)
+
+      + ebs_block_device {
+          + delete_on_termination = (known after apply)
+          + device_name           = (known after apply)
+          + encrypted             = (known after apply)
+          + iops                  = (known after apply)
+          + snapshot_id           = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = (known after apply)
+          + volume_type           = (known after apply)
+        }
+
+      + ephemeral_block_device {
+          + device_name  = (known after apply)
+          + no_device    = (known after apply)
+          + virtual_name = (known after apply)
+        }
+
+      + network_interface {
+          + delete_on_termination = (known after apply)
+          + device_index          = (known after apply)
+          + network_interface_id  = (known after apply)
+        }
+
+      + root_block_device {
+          + delete_on_termination = (known after apply)
+          + iops                  = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = (known after apply)
+          + volume_type           = (known after apply)
+        }
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+aws_instance.terraform_example: Creating...
+aws_instance.terraform_example: Still creating... [10s elapsed]
+aws_instance.terraform_example: Still creating... [20s elapsed]
+aws_instance.terraform_example: Still creating... [30s elapsed]
+aws_instance.terraform_example: Creation complete after 31s [id=i-08ec830beaf0bee39]
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+===============================================================
+
+--> Now we can check in AWS EC2 service, one instance got created without the key pair. So we can't open that linux server by ssh.
+It's better to destroy it and create another one.
+==============================================================
+
+[root@ip-172-31-19-242 myTerraProj]# terraform destroy
+aws_instance.terraform_example: Refreshing state... [id=i-08ec830beaf0bee39]
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # aws_instance.terraform_example will be destroyed
+  - resource "aws_instance" "terraform_example" {
+      - ami                          = "ami-5b673c34" -> null
+      - arn                          = "arn:aws:ec2:ap-south-1:406558015463:instance/i-08ec830beaf0bee39" -> null
+      - associate_public_ip_address  = true -> null
+      - availability_zone            = "ap-south-1a" -> null
+      - cpu_core_count               = 1 -> null
+      - cpu_threads_per_core         = 1 -> null
+      - disable_api_termination      = false -> null
+      - ebs_optimized                = false -> null
+      - get_password_data            = false -> null
+      - id                           = "i-08ec830beaf0bee39" -> null
+      - instance_state               = "running" -> null
+      - instance_type                = "t2.micro" -> null
+      - ipv6_address_count           = 0 -> null
+      - ipv6_addresses               = [] -> null
+      - monitoring                   = false -> null
+      - primary_network_interface_id = "eni-02aa3f175246c02ad" -> null
+      - private_dns                  = "ip-172-31-21-10.ap-south-1.compute.internal" -> null
+      - private_ip                   = "172.31.21.10" -> null
+      - public_dns                   = "ec2-13-232-196-156.ap-south-1.compute.amazonaws.com" -> null
+      - public_ip                    = "13.232.196.156" -> null
+      - security_groups              = [
+          - "default",
+        ] -> null
+      - source_dest_check            = true -> null
+      - subnet_id                    = "subnet-7284d61a" -> null
+      - tags                         = {
+          - "Name" = "Instance1"
+        } -> null
+      - tenancy                      = "default" -> null
+      - volume_tags                  = {} -> null
+      - vpc_security_group_ids       = [
+          - "sg-9dacc0f1",
+        ] -> null
+
+      - credit_specification {
+          - cpu_credits = "standard" -> null
+        }
+
+      - root_block_device {
+          - delete_on_termination = true -> null
+          - iops                  = 100 -> null
+          - volume_id             = "vol-0b6658920b08dcd01" -> null
+          - volume_size           = 10 -> null
+          - volume_type           = "gp2" -> null
+        }
+    }
+
+Plan: 0 to add, 0 to change, 1 to destroy.
+
+Do you really want to destroy all resources?
+  Terraform will destroy all your managed infrastructure, as shown above.
+  There is no undo. Only 'yes' will be accepted to confirm.
+
+  Enter a value: yes
+
+aws_instance.terraform_example: Destroying... [id=i-08ec830beaf0bee39]
+aws_instance.terraform_example: Still destroying... [id=i-08ec830beaf0bee39, 10s elapsed]
+aws_instance.terraform_example: Still destroying... [id=i-08ec830beaf0bee39, 20s elapsed]
+
+
+Destroy complete! Resources: 1 destroyed.
+==============================================================
+
+--> Now we can check in AWS EC2 service got deleted.
+
+==============================================================
+
+[root@ip-172-31-19-242 myTerraProj]# vi /tmp/Mumbai23May.pem
+
+-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEA551uZq9/sA5KJhrJTr8xz96+97dQZnR3fG+Ie1sNdfEhjhAa8WB0EkcRccGU
+OiAI1djg8rEo1gJbswXYtoWZDbfKuybk+aXClUvQkpTtDBbf2ay4eu7fMcBJ6OaqYw2hK8WhL+fl
+MMMaNQV/ZlHK2HBHTAE0pJmW0Sb1WWZMmSC9Lz1BTcqKHb2rAVhEtnMtQhz1ItWERfiQRG/kzZJH
+fCSbxiFhhy5ZDSML4rdefOKGVe0mLFXJXdK8Zkjc1v/wmkGltrhuZ4Fh8D7uQU7oNap+1fREbF1Y
+NouQk7c/qYz6knCniNplRIUtibbFKkAKMdYociu8VwcQ3fNFDpIWMwIDAQABAoIBAAjK+T38u6Q7
+ZqU7rxjGOWXi1u0gkHTTRxX6Rfwo4MHxfYyfH+a5+q4W9JqU9sOeI7e6nA+amipFvKV3O1ryh3T1
+3URtnZO8rz5rumdWMAmddLIW1IoWN3L0Edo9p4pLIis/PXdMHm9TeNM6ejOwNzswSASipxT4n7kg
++X+DWrUVbpv4UDcWUmuUfgWSmHu5pE+JKo0sxh1MvVDtvCAhRYx5nY9N1/Oz+lUd8OuAWYxeBcKd
+t1sOygh+Y8QAuFFWwopK/UDuxv/xLU/hjhjvcD5ASCN17FXZZTCEe2Bm/DQjx5CDZwhMgWLvOEOb
+so5Ps5aHnz51bFFfND8J++tneUECgYEA9X3u8fxvhXL/2e6NeMdzR9v4lk57w+yzChfa1Kbh3X5Y
++2x3UUgH2d0PqBkgI4HHHFPrUbQbl4kh3e/GWpETyKDH/yfw2BVwYzlp2y2VgXsOkvUNb1BApx2Y
+Y9F7lAGc/ctXy7620wa38onMAGiM64IXygHbogtbXuqeLMIu5jcCgYEA8YdvoN8WiqUXYBbYKsTM
+22Zm1LX2ooB9Oq8mPaTmKF8DZCpk/s0msu8ExmrMNzPy3FwyMWf0hrBtwWgOAADfaOUmjxsfq9qw
++AUl84qC87m7XelVJ9wjyZhdyKemNMz7IWC4mLvIBy++6GTBzMgNeJeKvUxv63/9bqIFxJsPkeUC
+gYB6HWK2zLNM1p+ecKO+6LfXjvxhCDlYhG2rH6KjFUBVRXxN1O6laAc/wE8Bdz4da3j4BmaQBd+T
+yYsnMxagBnqo2hGiQuPzGPcG5JBbjplIB0aAo5VDQdBnULl1LccjIIpPVM8fcobPAhCOfS0VJuyy
+WcwrmDEAslWJKXv1F8LskQKBgQCsEDAWCtekLbhZW+zjiw/lvS3Em1z4p1CPXfeAMtlEKWvhD9Kj
+MsM+9cgREkQpj3iUQ5n+WHB7A3UtM1PF7Nk7gQPXLxuA8mrgRcqjlSl1N/ujC3b+znUwSLuHFufw
+9ZZyUNUw+ZWmiP0X0a++k0YFgu/zq2CQBL4m8oXpag3NgQKBgDdjLr9AtMeTP5In5/ToN2aUxFeT
+4MdVcT46WfmFKSrue6sEgf8jAeKrzk8nAv/zVfVkgp666AT4Q6f5leYBNlMPZesuFIylWPI36pKQ
+FxRZ254Y+OcQzflN4eBUvCyB8aCg2czoWDA+Bm79X4t4H/oXqhyGwHDeI5Aneta8vyAw
+-----END RSA PRIVATE KEY-----
+
+
+[root@ip-172-31-19-242 myTerraProj]# cat /tmp/myscript
+sudo yum install httpd -y
+sudo service httpd start
+
+
+create_instance2.tf
+===================
+provider "aws" {
+  access_key = "AKIAJBAOMQ4GH6RZWQHQ"
+  secret_key = "iA2lZ3oAMS9Hytv3oG9W9HwjkcJbx+BNgrmtGGA0"
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "terraform_example2" {
+  ami = "ami-5b673c34"
+  instance_type = "t2.micro"
+  key_name = "Mumbai23May"
+
+  provisioner "file" {
+    source = "/tmp/myscript"
+    destination = "/tmp/remotescript.sh"
+  }
+
+  connection {
+    user = "ec2-user"
+    host = self.public_ip
+    private_key = "${file("/tmp/Mumbai23May.pem")}"
+  }
+}
+
+=======================================
+### Note:-
+Here in this file, I am providing provisioner details.
+
+source: It's a file location, and in that file I am keeping all my configuration setup commands.
+
+destination: this is file location in remote machine.
+
+I have saved the pem file contents in console server under /tmp folder.
+
+  key_name = "Mumbai23May"  ### public key without pem extension
+
+  private_key = "${file("/tmp/Mumbai23May.pem")}" ### pricate key with the pem extension
+
+=======================================
+
+How to execute a command using terraform
+
+https://www.terraform.io/docs/provisioners/remote-exec.html
+
+=======================================
+
+Now we will see httpd service will start in Remote machine. 
+
+=======================================
+create_instance3.tf
+===================
+provider "aws" {
+  access_key = "AKIAJBAOMQ4GH6RZWQHQ"
+  secret_key = "iA2lZ3oAMS9Hytv3oG9W9HwjkcJbx+BNgrmtGGA0"
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "terraform_example2" {
+  ami = "ami-5b673c34"
+  instance_type = "t2.micro"
+  key_name = "Mumbai23May"
+
+  provisioner "file" {
+    source = "/tmp/myscript"
+    destination = "/tmp/remotescript.sh"
+  }
+
+provisioner "remote-exec" {
+    inline = [
+     "chmod 755 /tmp/remotescript.sh",
+	 "sh /tmp/remotescript.sh",
+    ]
+  }
+  connection {
+    type = "ssh"
+    user = "ec2-user"
+    host = self.public_ip
+    private_key = "${file("/tmp/Mumbai23May.pem")}"
+  }
+}
+
+
+
+Run the below commands.
+$ terraform destroy
+
+$ terraform init
+
+$ terraform plan
+
+$ terraform apply
+
