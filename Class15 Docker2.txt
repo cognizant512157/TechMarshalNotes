@@ -63,8 +63,9 @@ It works
 
 
 
-# To execute a container (loging into) which is started.
-Syntax: docker exec -it containerName/ID
+# To enter into a container (loging into) which has started.
+
+$ docker exec -it containerName/ID
 
 [root@ip-172-31-3-66 ~]# docker exec -it mySecondCont /bin/bash
 
@@ -103,8 +104,8 @@ root@a3e1e4ca2a20:/usr/local/apache2/htdocs# cat index.html
 
 root@a3e1e4ca2a20:/usr/local/apache2/htdocs# apt update
 
-By default 'vi' isn't installed in Container OS, because as we said it's a light weight OS. 
-Now we will install vim which internally vi cmd.
+# By default 'vi' isn't installed in Container OS, because as we said it's a light weight OS. 
+# Now we will install vim which internally vi cmd.
 
 root@a3e1e4ca2a20:/usr/local/apache2/htdocs# apt install vim -y
 
@@ -112,15 +113,15 @@ root@a3e1e4ca2a20:/usr/local/apache2/htdocs# apt install vim -y
 root@a3e1e4ca2a20:/usr/local/apache2/htdocs# vi index.html
 <!DOCTYPE html>
 <html>
-<head>
-<title>My Page</title>
-</head>
-<body>
-    <h2>Devops Engineer</h2>
-    <p>Tell me about yourself</p>
-    <p>What do you know about Devops</p>
-    <p>What is the benefit of Devops</p>
-</body>
+  <head>
+  <title>My Page</title>
+  </head>
+  <body>
+      <h2>Devops Engineer</h2>
+      <p>Tell me about yourself</p>
+      <p>What do you know about Devops</p>
+      <p>What is the benefit of Devops</p>
+  </body>
 </html>
 #save and exit 
 
@@ -170,10 +171,9 @@ CONTAINER ID        IMAGE               COMMAND              CREATED            
 
 
 Syntax:
-# docker  cp   /tmp/index.html  containername:/usr/local/apache2/htdocs/ 
+# docker  cp   SourceFile  ContainerName:DestinationFolder
 
 # "/usr/local/apache2/htdocs" is the lookup path where browser by default search for a html file.
-index.html file is UI file.
 
 
 Step3: Check the http page in the browser. 
@@ -189,14 +189,61 @@ Scenario 3: Volume Mapping
 ==========================
 Here we will see:- Create one central folder and keep our index.html file inside it and then map this folder to all the containers.
 
-Now create 3 containers on diff base ip
+Now create 3 containers for httpd image and give different base port number to each image.
 81:80
 82:80
 83:80
 
-[root@ip-172-31-3-66 ~]# mkdir /mydir
 
-# Write the volume mapping cmd?
+[root@ip-172-31-3-66 mydir]# docker run -d -p 81:80 --name myhttpd1 httpd
+ab3fd48e57e40d07f83735aa002b125bd029f8991eda9554743961ef42d30f2d
+
+
+[root@ip-172-31-3-66 mydir]# docker run -d -p 82:80 --name myhttpd2 httpd
+3658ab0bb88f760126cd795278852a32ceaae778804de88b61f1a5ecfa98d1a2
+
+
+[root@ip-172-31-3-66 mydir]# docker run -d -p 83:80 --name myhttpd3 httpd
+2e3abd8c6a8d7be392e72bc264d0f4059093b5844cd14eef682c86f81cc3ca7d
+
+
+[root@ip-172-31-3-66 mydir]# docker ps -a
+CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                NAMES
+2e3abd8c6a8d        httpd               "httpd-foreground"   37 seconds ago      Up 36 seconds       0.0.0.0:83->80/tcp   myhttpd3
+3658ab0bb88f        httpd               "httpd-foreground"   44 seconds ago      Up 43 seconds       0.0.0.0:82->80/tcp   myhttpd2
+ab3fd48e57e4        httpd               "httpd-foreground"   57 seconds ago      Up 56 seconds       0.0.0.0:81->80/tcp   myhttpd1
+
+
+
+[root@ip-172-31-3-66 ~]# mkdir /mydir
+[root@ip-172-31-3-66 ~]# vi index.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Page</title>
+</head>
+<body>
+    <h2>Devops Engineer</h2>
+    <p>Tell me about yourself</p>
+    <p>What do you know about Devops</p>
+    <p>What is the benefit of Devops</p>
+</body>
+</html>
+
+
+[root@ip-172-31-3-66 mydir]# docker -v /mydir/ myhttpd3:/usr/local/apache2/htdocs/
+Docker version 18.06.1-ce, build e68fc7a215d7133c34aa18e3b72b4a21fd0c6136
+
+
+[root@ip-172-31-3-66 mydir]# docker -v /mydir/ myhttpd2:/usr/local/apache2/htdocs/
+Docker version 18.06.1-ce, build e68fc7a215d7133c34aa18e3b72b4a21fd0c6136
+
+
+[root@ip-172-31-3-66 mydir]# docker -v /mydir/ myhttpd1:/usr/local/apache2/htdocs/
+Docker version 18.06.1-ce, build e68fc7a215d7133c34aa18e3b72b4a21fd0c6136
+
+#### It is not working
+[root@ip-172-31-3-66 mydir]# docker myhttpd1 -v /mydir:/usr/local/apache2/htdocs/
 
 So here if you modify index.html will reflect in all 3 container.
 
@@ -221,7 +268,7 @@ f6be2057433d
 [root@ip-172-31-3-66 ~]# docker container stop -t 10  79229001f974
 79229001f974
 
-
+[root@ip-172-31-3-66 ~]# docker log 
 Home exercise
 =============
 Tomcat container
