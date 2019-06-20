@@ -35,22 +35,28 @@ Containers are the organizational units of Docker.
 When we build an image and start running it; we are running in a container.
 In simple terms, an image is a template, and a container is a copy of that template. You can have multiple containers (copies) of the same image.
 
-
-
 =====================
-
 Docker is available in two edition.
--> Community Edition. Its free.
--> Enterprise Edition, its paid. YOu need a subscription to use it.
+-> Community Edition, it's free.
+-> Enterprise Edition, it's paid. You need a subscription to use it.
 
-Follow the steps with subscription
-
+Follow the steps with subscription:
+-----------------------------------
 2nd AMI machine in AWS which contains docker in it.
 
-$ yum install docker -y
 
-ducker hub (https://hub.docker.com/)
-Its a repository, Many developer develop images and publish in it.
+Install the docker machine if it's not available.
+[root@ip-172-31-3-66 ~]# yum install docker -y
+
+
+
+[root@ip-172-31-3-66 ~]# docker --version
+Docker version 18.06.1-ce, build e68fc7a215d7133c34aa18e3b72b4a21fd0c6136
+
+
+
+--> ducker hub (https://hub.docker.com/)
+It's a repository, many developer develop the images and publish in the docker hub.
 
 
 docker images list the docker images under the base server(AWS AMI2)
@@ -72,8 +78,6 @@ This command is going to download the image file into ur local base system.
 Using default tag: latest
 latest: Pulling from library/httpd
 743f2d6c1f65: Pull complete
-c92eb69846a6: Pull complete
-2211b052800a: Pull complete
 a8f7283e297c: Pull complete
 a72363db8c78: Pull complete
 Digest: sha256:6eceaadeab70e6355edb3fef41b8c0b34cafd9b00a17252c875530dcc2d98522
@@ -87,11 +91,9 @@ REPOSITORY          TAG                 IMAGE ID            CREATED             
 httpd               latest              3bd2a941224f        4 days ago          140MB
 
 
-This cmd will create a container. 
-It will first search in the local repo and if it's not there then search in dockerHub.
-docker run image_name
+This below cmd will create a container. It will first search in the local repo and if it's not there then search in dockerHub and pull it into the machine. It's internally pull and then run.
 
-Ex: docker run httpd
+$ docker run image_name
 
 [root@ip-172-31-3-66 ~]# docker run httpd
 AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.2. Set the 'ServerName' directive globally to suppress this message
@@ -100,10 +102,12 @@ AH00558: httpd: Could not reliably determine the server's fully qualified domain
 [Thu Jun 13 09:59:22.446852 2019] [core:notice] [pid 1:tid 140624013541440] AH00094: Command line: 'httpd -D FOREGROUND'
 [Thu Jun 13 09:59:24.499390 2019] [mpm_event:notice] [pid 1:tid 140624013541440] AH00491: caught SIGTERM, shutting down
 
+------------------------------------------
 
-## It will run in interactive mode if you don't mention anything, Which is internally "docker run -i -t httpd"
+# The above cmd will run in interactive mode, which is internally "docker run -i -t httpd"
+But we need the shell prompt also, for that we have to mention -d, which means run in detach mode.
 
-docker run -d image_file  # -d is for detach mode
+$ docker run -d image_file
 
 [root@ip-172-31-3-66 ~]# docker run -d httpd
 2d893d050c4eaacc1d81400f703440324ee0237f539ce6915b3e212596309dbc
